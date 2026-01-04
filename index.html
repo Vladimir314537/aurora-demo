@@ -6,138 +6,435 @@
     <title>Aurora Demo - Приватный ИИ-дневник</title>
     
     <style>
-        /* ОСНОВНЫЕ СТИЛИ */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: #0f172a; 
-            color: #f8fafc; 
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .app-container { max-width: 1000px; margin: 0 auto; }
-        
-        /* ШАПКА */
-        .header { 
-            text-align: center; 
-            margin-bottom: 30px; 
-            padding: 25px; 
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); 
-            border-radius: 15px; 
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-        }
-        .logo { font-size: 2.5rem; margin-bottom: 10px; }
-        h1 { font-size: 2rem; margin-bottom: 10px; }
-        .tagline { color: #e2e8f0; font-size: 1.1rem; opacity: 0.9; }
-        
-        /* ВКЛАДКИ */
-        .tabs { 
-            display: flex; 
-            background: #1e293b; 
-            border-radius: 12px; 
-            padding: 5px; 
-            margin-bottom: 30px; 
-        }
-        .tab { 
-            flex: 1; 
-            padding: 15px; 
-            text-align: center; 
-            cursor: pointer; 
-            border-radius: 8px; 
-            transition: all 0.3s; 
-        }
-        .tab:hover { background: #334155; }
-        .tab.active { background: #3b82f6; color: white; }
-        
-        .tab-content { display: none; padding: 20px; }
-        .tab-content.active { display: block; }
-        
-        /* ФОРМА ЗАМЕТКИ */
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #cbd5e1; }
-        input[type="text"], textarea { 
-            width: 100%; 
-            padding: 12px; 
-            background: #334155; 
-            border: 2px solid #475569; 
-            border-radius: 10px; 
-            color: white; 
-            font-size: 16px; 
-        }
-        textarea { min-height: 120px; resize: vertical; }
-        
-        .buttons { display: flex; gap: 15px; margin-top: 20px; }
-        .btn { 
-            padding: 12px 25px; 
-            border: none; 
-            border-radius: 10px; 
-            font-size: 16px; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-            flex: 1;
-        }
-        .btn-primary { background: #3b82f6; color: white; }
-        .btn-primary:hover { background: #2563eb; }
-        .btn-secondary { background: #475569; color: white; }
-        .btn-secondary:hover { background: #64748b; }
-        
-        /* СПИСОК ЗАМЕТОК */
-        .notes-list { margin-top: 30px; }
-        .note-card { 
-            background: #334155; 
-            border-radius: 12px; 
-            padding: 20px; 
-            margin-bottom: 15px; 
-            border-left: 4px solid #3b82f6; 
-        }
-        .note-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .note-title { font-size: 1.2rem; font-weight: bold; }
-        .note-date { color: #94a3b8; font-size: 0.9rem; }
-        .note-text { color: #cbd5e1; line-height: 1.5; margin-bottom: 10px; }
-        
-        /* ПОИСК */
-        .search-box { margin-bottom: 20px; }
-        #search-input { 
-            width: 100%; 
-            padding: 15px; 
-            background: #334155; 
-            border: 2px solid #475569; 
-            border-radius: 10px; 
-            color: white; 
-            font-size: 16px; 
-        }
-        
-        /* АРХИТЕКТУРА И БЕЗОПАСНОСТЬ */
-        .info-block { 
-            background: #1e293b; 
-            border-radius: 15px; 
-            padding: 30px; 
-            margin-bottom: 20px; 
-        }
-        
-        /* ФУТЕР */
-        .footer { 
-            text-align: center; 
-            margin-top: 50px; 
-            padding: 20px; 
-            color: #94a3b8; 
-            border-top: 1px solid #334155; 
-        }
-        
-        /* УТИЛИТЫ */
-        .hidden { display: none !important; }
-        .empty-state { text-align: center; padding: 40px; color: #94a3b8; }
-        .tag { 
-            background: rgba(59, 130, 246, 0.2); 
-            color: #60a5fa; 
-            padding: 4px 12px; 
-            border-radius: 15px; 
-            font-size: 0.85rem; 
-            display: inline-block; 
-            margin-right: 8px; 
-            margin-bottom: 8px;
-        }
+       /* ОСНОВНЫЕ СТИЛИ */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+    background: #0f172a; 
+    color: #f8fafc; 
+    min-height: 100vh;
+    padding: 15px;
+}
+
+.app-container { 
+    max-width: 1000px; 
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* ШАПКА - АДАПТИВНАЯ */
+.header { 
+    text-align: center; 
+    margin-bottom: 20px; 
+    padding: 20px 15px; 
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); 
+    border-radius: 12px; 
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+.logo { 
+    font-size: 2rem; 
+    margin-bottom: 8px; 
+}
+
+h1 { 
+    font-size: 1.5rem; 
+    margin-bottom: 8px; 
+    line-height: 1.3;
+}
+
+.tagline { 
+    color: #e2e8f0; 
+    font-size: 0.95rem; 
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+/* ВКЛАДКИ - ИСПРАВЛЕННЫЕ ДЛЯ МОБИЛЬНЫХ */
+.tabs { 
+    display: flex; 
+    flex-wrap: wrap;
+    background: #1e293b; 
+    border-radius: 10px; 
+    padding: 4px; 
+    margin-bottom: 20px; 
+    gap: 4px;
+}
+
+.tab { 
+    flex: 1;
+    min-width: calc(50% - 8px);
+    padding: 12px 8px; 
+    text-align: center; 
+    cursor: pointer; 
+    border-radius: 8px; 
+    transition: all 0.3s; 
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tab:hover { 
+    background: #334155; 
+}
+
+.tab.active { 
+    background: #3b82f6; 
+    color: white; 
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.tab-content { 
+    display: none; 
+    padding: 15px 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.tab-content.active { 
+    display: block; 
+}
+
+/* ФОРМА ЗАМЕТКИ - ИСПРАВЛЕННАЯ ДЛЯ МОБИЛЬНЫХ */
+.info-block {
+    background: #1e293b; 
+    border-radius: 12px; 
+    padding: 20px 15px; 
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-group { 
+    margin-bottom: 16px; 
+    width: 100%;
+}
+
+label { 
+    display: block; 
+    margin-bottom: 6px; 
+    color: #cbd5e1; 
+    font-size: 0.95rem;
+}
+
+input[type="text"], 
+textarea { 
+    width: 100%; 
+    padding: 12px 15px; 
+    background: #334155; 
+    border: 2px solid #475569; 
+    border-radius: 8px; 
+    color: white; 
+    font-size: 16px; 
+    box-sizing: border-box;
+    -webkit-appearance: none;
+}
+
+textarea { 
+    min-height: 100px; 
+    resize: vertical; 
+    font-family: inherit;
+}
+
+/* КНОПКИ - ИСПРАВЛЕННЫЕ ДЛЯ МОБИЛЬНЫХ */
+.buttons { 
+    display: flex; 
+    flex-direction: column;
+    gap: 12px; 
+    margin-top: 20px; 
+    width: 100%;
+}
+
+@media (min-width: 480px) {
+    .buttons {
+        flex-direction: row;
+    }
+}
+
+.btn { 
+    padding: 14px 20px; 
+    border: none; 
+    border-radius: 8px; 
+    font-size: 16px; 
+    cursor: pointer; 
+    transition: all 0.3s; 
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    font-weight: 500;
+}
+
+.btn-primary { 
+    background: #3b82f6; 
+    color: white; 
+}
+
+.btn-primary:hover { 
+    background: #2563eb; 
+}
+
+.btn-secondary { 
+    background: #475569; 
+    color: white; 
+}
+
+.btn-secondary:hover { 
+    background: #64748b; 
+}
+
+/* СПИСОК ЗАМЕТОК - АДАПТИВНЫЙ */
+.notes-list { 
+    margin-top: 25px; 
+}
+
+.note-card { 
+    background: #334155; 
+    border-radius: 10px; 
+    padding: 16px; 
+    margin-bottom: 12px; 
+    border-left: 4px solid #3b82f6; 
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.note-header { 
+    display: flex; 
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px; 
+}
+
+@media (min-width: 480px) {
+    .note-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+}
+
+.note-title { 
+    font-size: 1.1rem; 
+    font-weight: 600; 
+    line-height: 1.3;
+}
+
+.note-date { 
+    color: #94a3b8; 
+    font-size: 0.85rem; 
+    white-space: nowrap;
+}
+
+.note-text { 
+    color: #cbd5e1; 
+    line-height: 1.5; 
+    margin-bottom: 10px; 
+    font-size: 0.95rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* ТЕГИ - АДАПТИВНЫЕ */
+.tag { 
+    background: rgba(59, 130, 246, 0.2); 
+    color: #60a5fa; 
+    padding: 4px 10px; 
+    border-radius: 12px; 
+    font-size: 0.8rem; 
+    display: inline-block; 
+    margin-right: 6px; 
+    margin-bottom: 6px;
+    white-space: nowrap;
+}
+
+/* ПОИСК - АДАПТИВНЫЙ */
+.search-box { 
+    margin-bottom: 20px; 
+    width: 100%;
+}
+
+#search-input { 
+    width: 100%; 
+    padding: 14px 15px; 
+    background: #334155; 
+    border: 2px solid #475569; 
+    border-radius: 8px; 
+    color: white; 
+    font-size: 16px; 
+    box-sizing: border-box;
+}
+
+/* КОНТЕНТ АРХИТЕКТУРЫ И БЕЗОПАСНОСТИ - ИСПРАВЛЕННЫЙ */
+.info-block p,
+.info-block div {
+    color: #cbd5e1; 
+    margin: 12px 0; 
+    line-height: 1.5;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.info-block strong {
+    color: #f8fafc;
+    font-size: 1rem;
+}
+
+/* БЛОКИ БЕЗОПАСНОСТИ - АДАПТИВНЫЕ */
+.security-level {
+    background: rgba(16, 185, 129, 0.1); 
+    padding: 15px; 
+    border-radius: 10px; 
+    margin-bottom: 12px; 
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.security-level:nth-child(2) {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.security-level:nth-child(3) {
+    background: rgba(139, 92, 246, 0.1);
+}
+
+/* ФУТЕР - АДАПТИВНЫЙ */
+.footer { 
+    text-align: center; 
+    margin-top: 40px; 
+    padding: 20px 15px; 
+    color: #94a3b8; 
+    border-top: 1px solid #334155; 
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.footer p {
+    margin-bottom: 8px;
+}
+
+/* УТИЛИТЫ */
+.hidden { 
+    display: none !important; 
+}
+
+.empty-state { 
+    text-align: center; 
+    padding: 40px 20px; 
+    color: #94a3b8; 
+    font-size: 0.95rem;
+}
+
+/* МЕДИА-ЗАПРОСЫ ДЛЯ РАЗНЫХ УСТРОЙСТВ */
+
+/* Маленькие телефоны (до 360px) */
+@media (max-width: 360px) {
+    .tab {
+        font-size: 0.8rem;
+        padding: 10px 6px;
+    }
+    
+    h1 {
+        font-size: 1.3rem;
+    }
+    
+    .btn {
+        padding: 12px 15px;
+        font-size: 15px;
+    }
+}
+
+/* Планшеты и большие телефоны (от 481px) */
+@media (min-width: 481px) {
+    body {
+        padding: 20px;
+    }
+    
+    .header {
+        padding: 25px;
+    }
+    
+    .tab {
+        font-size: 1rem;
+        padding: 14px 10px;
+    }
+    
+    .info-block {
+        padding: 25px 20px;
+    }
+}
+
+/* Десктопы (от 768px) */
+@media (min-width: 768px) {
+    body {
+        padding: 30px;
+    }
+    
+    .tabs {
+        flex-wrap: nowrap;
+    }
+    
+    .tab {
+        min-width: auto;
+        padding: 15px;
+    }
+    
+    .buttons {
+        flex-direction: row;
+    }
+    
+    .btn {
+        width: auto;
+        min-width: 160px;
+    }
+    
+    .note-header {
+        flex-direction: row;
+    }
+}
+
+/* Большие экраны (от 1024px) */
+@media (min-width: 1024px) {
+    .app-container {
+        max-width: 900px;
+    }
+}
+
+/* ИСПРАВЛЕНИЕ ДЛЯ IOS SAFARI */
+@supports (-webkit-touch-callout: none) {
+    input[type="text"],
+    textarea,
+    .btn {
+        font-size: 16px; /* Предотвращает зум в iOS */
+    }
+}
+
+/* ПРЕДОТВРАЩЕНИЕ ГОРИЗОНТАЛЬНОГО СКРОЛА */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+* {
+    max-width: 100%;
+}
+
+/* ИСПРАВЛЕНИЕ ДЛЯ СОДЕРЖИМОГО ВКЛАДКИ БЕЗОПАСНОСТЬ */
+#security .info-block {
+    overflow: hidden;
+}
+
+#security .info-block > div {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
     </style>
 </head>
 <body>
