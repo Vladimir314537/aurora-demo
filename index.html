@@ -1,31 +1,131 @@
-<!-- В <head> добавь: -->
-<link rel="stylesheet" href="hybrid-search.css">
-
-<!-- В конце <body> перед закрывающим </body> добавь: -->
-<script src="semantic-search.js"></script>
-<script src="hybrid-search.js"></script>
-
-<!-- Инициализация -->
-<script>
-// Если у тебя уже есть инициализация, добавь это в конец
-document.addEventListener('DOMContentLoaded', function() {
-    // Даем время на загрузку
-    setTimeout(() => {
-        if (window.auroraSearch) {
-            console.log('Aurora Search уже инициализирован');
-        } else if (window.HybridSearch) {
-            // Инициализация вручную если нужно
-            console.log('Поисковый движок загружен');
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Demo - Гибридный поиск</title>
+    <link rel="stylesheet" href="hybrid-search.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
-    }, 500);
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        #search-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            outline: none;
+            margin-bottom: 20px;
+            transition: border 0.3s;
+        }
+        #search-input:focus {
+            border-color: #3b82f6;
+        }
+        .demo-hint {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Aurora Demo</h1>
+        <p class="subtitle">Приватный ИИ-дневник с гибридным поиском</p>
+        
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="search-input"
+                placeholder="🔍 Ищите по смыслу, тегам (#идея), ключевым словам..."
+                autocomplete="off"
+            >
+            <div id="search-suggestions"></div>
+        </div>
+        
+        <div id="search-stats"></div>
+        <div id="search-results"></div>
+        
+        <div class="demo-hint">
+            <h3>📝 Для тестирования добавьте заметки через вкладку "Дневник"</h3>
+            <p>Примеры запросов:</p>
+            <ul>
+                <li><code>#идея</code> — поиск по тегам</li>
+                <li><code>бизнес план</code> — семантический поиск</li>
+                <li><code>технический проект</code> — гибридный поиск</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="semantic-search.js"></script>
+    <script src="hybrid-search.js"></script>
     
-    // Пример: ручной вызов поиска
-    window.searchAurora = function(query) {
-        if (window.auroraSearch) {
-            window.auroraSearch.handleSearch(query);
-        } else {
-            console.error('Поиск еще не инициализирован');
-        }
-    };
-});
-</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Aurora Demo загружен!');
+            
+            // Даем время на загрузку всех скриптов
+            setTimeout(function() {
+                try {
+                    if (typeof AuroraSearchUI !== 'undefined') {
+                        window.auroraSearch = new AuroraSearchUI();
+                        console.log('✅ Гибридный поиск Aurora активирован!');
+                        
+                        // Добавляем тестовые заметки если нет своих
+                        const testNotes = [
+                            {
+                                title: "Бизнес идея",
+                                text: "Создать приватный ИИ-дневник Aurora с архитектурой Куратор-Аналитик",
+                                date: new Date().toISOString(),
+                                tags: ["идея", "стартап"]
+                            },
+                            {
+                                title: "Техническая задача",
+                                text: "Реализовать гибридный поиск с семантикой и тегами",
+                                date: new Date().toISOString(),
+                                tags: ["технологии", "разработка"]
+                            }
+                        ];
+                        
+                        // Сохраняем тестовые заметки если localStorage пустой
+                        if (!localStorage.getItem('aurora-notes')) {
+                            localStorage.setItem('aurora-notes', JSON.stringify(testNotes));
+                            console.log('✅ Добавлены тестовые заметки');
+                        }
+                    } else {
+                        console.error('❌ AuroraSearchUI не загружен');
+                    }
+                } catch (error) {
+                    console.error('❌ Ошибка инициализации:', error);
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
