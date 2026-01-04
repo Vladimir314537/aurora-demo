@@ -6,7 +6,6 @@
     <title>Aurora Demo - Приватный ИИ-дневник с AI-ассистентом</title>
     
     <style>
-        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
         * { 
             margin: 0; 
             padding: 0; 
@@ -27,21 +26,19 @@
             width: 100%;
         }
         
-        /* ===== ШАПКА С АНИМАЦИЕЙ ===== */
+        /* ШАПКА */
         .header { 
             text-align: center; 
             margin-bottom: 20px; 
             padding: 20px 15px; 
-            background: linear-gradient(-45deg, #6366f1, #8b5cf6, #3b82f6, #10b981);
+            background: linear-gradient(-45deg, #ff0080, #ff8c00, #40e0d0, #8a2be2);
             background-size: 400% 400%;
-            animation: auroraFlow 15s ease infinite;
+            animation: auroraPulse 8s ease infinite;
             border-radius: 12px; 
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(255, 0, 128, 0.3);
         }
         
-        @keyframes auroraFlow {
+        @keyframes auroraPulse {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
@@ -56,7 +53,7 @@
         
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+            50% { transform: translateY(-10px); }
         }
         
         h1 { 
@@ -72,7 +69,7 @@
             line-height: 1.4;
         }
         
-        /* ===== ДАШБОРД СТАТИСТИКИ ===== */
+        /* ДАШБОРД */
         .dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -82,8 +79,7 @@
         
         .stat-card {
             background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 10px;
             padding: 15px;
             text-align: center;
@@ -113,7 +109,7 @@
             color: #94a3b8;
         }
         
-        /* ===== ВКЛАДКИ ===== */
+        /* ВКЛАДКИ */
         .tabs { 
             display: flex; 
             flex-wrap: wrap;
@@ -133,13 +129,6 @@
             border-radius: 8px; 
             transition: all 0.3s; 
             font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .tab:hover { 
-            background: #334155; 
         }
         
         .tab.active { 
@@ -152,12 +141,11 @@
             display: none; 
             padding: 15px 0;
             width: 100%;
-            overflow-x: hidden;
         }
         
         .tab-content.active { 
             display: block; 
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.3s ease;
         }
         
         @keyframes fadeIn {
@@ -165,7 +153,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* ===== БЛОКИ КОНТЕНТА ===== */
+        /* БЛОКИ */
         .info-block {
             background: #1e293b; 
             border-radius: 12px; 
@@ -173,7 +161,6 @@
             margin-bottom: 20px;
             width: 100%;
             box-sizing: border-box;
-            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
         .form-group { 
@@ -188,8 +175,7 @@
             font-size: 0.95rem;
         }
         
-        input[type="text"], 
-        textarea { 
+        input[type="text"], textarea { 
             width: 100%; 
             padding: 12px 15px; 
             background: #334155; 
@@ -198,15 +184,6 @@
             color: white; 
             font-size: 16px; 
             box-sizing: border-box;
-            -webkit-appearance: none;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="text"]:focus, 
-        textarea:focus { 
-            border-color: #3b82f6;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
         
         textarea { 
@@ -215,7 +192,7 @@
             font-family: inherit;
         }
         
-        /* ===== ИИ-ПОДСКАЗКИ ===== */
+        /* ИИ-ПОДСКАЗКИ */
         .ai-suggestions {
             background: rgba(16, 185, 129, 0.1);
             border: 1px solid rgba(16, 185, 129, 0.3);
@@ -227,24 +204,6 @@
         
         .ai-suggestions.active {
             display: block;
-            animation: slideIn 0.5s ease;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        .ai-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            color: #10b981;
-        }
-        
-        .ai-icon {
-            font-size: 1.2rem;
         }
         
         .ai-tip {
@@ -254,22 +213,9 @@
             margin-bottom: 8px;
             font-size: 0.9rem;
             color: #a7f3d0;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
         }
         
-        .ai-tip:last-child {
-            margin-bottom: 0;
-        }
-        
-        .tip-icon {
-            font-size: 0.9rem;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-        
-        /* ===== КНОПКИ ===== */
+        /* КНОПКИ */
         .buttons { 
             display: flex; 
             flex-direction: column;
@@ -295,40 +241,18 @@
             box-sizing: border-box;
             text-align: center;
             font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
         
         .btn-primary { 
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
+            background: #3b82f6; 
             color: white; 
         }
         
         .btn-primary:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+            background: #2563eb; 
         }
         
-        .btn-secondary { 
-            background: #475569; 
-            color: white; 
-        }
-        
-        .btn-secondary:hover { 
-            background: #64748b; 
-        }
-        
-        .btn-icon {
-            font-size: 1.1rem;
-        }
-        
-        /* ===== СПИСОК ЗАМЕТОК ===== */
-        .notes-list { 
-            margin-top: 25px; 
-        }
-        
+        /* СПИСОК ЗАМЕТОК */
         .note-card { 
             background: #334155; 
             border-radius: 10px; 
@@ -337,12 +261,6 @@
             border-left: 4px solid #3b82f6; 
             width: 100%;
             box-sizing: border-box;
-            transition: all 0.3s;
-        }
-        
-        .note-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
         
         .note-header { 
@@ -366,85 +284,14 @@
             line-height: 1.3;
         }
         
-        .note-date { 
-            color: #94a3b8; 
-            font-size: 0.85rem; 
-            white-space: nowrap;
-        }
-        
         .note-text { 
             color: #cbd5e1; 
             line-height: 1.5; 
             margin-bottom: 10px; 
             font-size: 0.95rem;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
         }
         
-        /* ===== ТЕГИ ===== */
-        .tags-input {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-            margin-top: 5px;
-        }
-        
-        .tag { 
-            background: rgba(59, 130, 246, 0.2); 
-            color: #60a5fa; 
-            padding: 4px 10px; 
-            border-radius: 12px; 
-            font-size: 0.8rem; 
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-right: 6px; 
-            margin-bottom: 6px;
-            white-space: nowrap;
-        }
-        
-        .tag-remove {
-            cursor: pointer;
-            font-size: 1rem;
-            line-height: 1;
-            opacity: 0.7;
-        }
-        
-        .tag-remove:hover {
-            opacity: 1;
-        }
-        
-        /* ===== ПОИСК С ФИЛЬТРАМИ ===== */
-        .search-container {
-            position: relative;
-        }
-        
-        .search-box { 
-            margin-bottom: 20px; 
-            width: 100%;
-        }
-        
-        #search-input { 
-            width: 100%; 
-            padding: 14px 15px 14px 45px; 
-            background: #334155; 
-            border: 2px solid #475569; 
-            border-radius: 8px; 
-            color: white; 
-            font-size: 16px; 
-            box-sizing: border-box;
-        }
-        
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-            font-size: 1.1rem;
-        }
-        
+        /* ФИЛЬТРЫ ПОИСКА */
         .search-filters {
             display: flex;
             gap: 10px;
@@ -468,20 +315,6 @@
             color: white;
         }
         
-        .filter-btn:hover {
-            background: #64748b;
-        }
-        
-        /* ===== РЕЗУЛЬТАТЫ ПОИСКА ===== */
-        .search-stats {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
         .relevance-badge {
             background: linear-gradient(135deg, #10b981, #3b82f6);
             color: white;
@@ -491,53 +324,7 @@
             font-weight: 600;
         }
         
-        /* ===== АРХИТЕКТУРА И БЕЗОПАСНОСТЬ ===== */
-        .arch-block {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
-        
-        .arch-block:hover {
-            border-color: #3b82f6;
-            transform: translateY(-3px);
-        }
-        
-        .arch-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-        
-        .arch-icon {
-            font-size: 1.8rem;
-        }
-        
-        .security-level {
-            background: rgba(16, 185, 129, 0.1); 
-            padding: 15px; 
-            border-radius: 10px; 
-            margin-bottom: 12px; 
-            width: 100%;
-            box-sizing: border-box;
-            border-left: 4px solid #10b981;
-        }
-        
-        .security-level:nth-child(2) {
-            background: rgba(59, 130, 246, 0.1);
-            border-left-color: #3b82f6;
-        }
-        
-        .security-level:nth-child(3) {
-            background: rgba(139, 92, 246, 0.1);
-            border-left-color: #8b5cf6;
-        }
-        
-        /* ===== ФУТЕР ===== */
+        /* ФУТЕР */
         .footer { 
             text-align: center; 
             margin-top: 40px; 
@@ -545,25 +332,9 @@
             color: #94a3b8; 
             border-top: 1px solid #334155; 
             font-size: 0.9rem;
-            line-height: 1.4;
         }
         
-        .footer p {
-            margin-bottom: 8px;
-        }
-        
-        /* ===== УТИЛИТЫ ===== */
-        .hidden { 
-            display: none !important; 
-        }
-        
-        .empty-state { 
-            text-align: center; 
-            padding: 40px 20px; 
-            color: #94a3b8; 
-            font-size: 0.95rem;
-        }
-        
+        /* УВЕДОМЛЕНИЯ */
         .notification {
             position: fixed;
             top: 20px;
@@ -575,10 +346,6 @@
             box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
             z-index: 1000;
             animation: slideInRight 0.3s ease;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
         
         @keyframes slideInRight {
@@ -586,11 +353,9 @@
             to { transform: translateX(0); opacity: 1; }
         }
         
-        /* ===== МЕДИА-ЗАПРОСЫ ===== */
+        /* АДАПТИВНОСТЬ */
         @media (max-width: 360px) {
             .tab { font-size: 0.8rem; padding: 10px 6px; }
-            h1 { font-size: 1.3rem; }
-            .btn { padding: 12px 15px; font-size: 15px; }
         }
         
         @media (min-width: 481px) {
@@ -598,7 +363,6 @@
             .header { padding: 25px; }
             .tab { font-size: 1rem; padding: 14px 10px; }
             .info-block { padding: 25px 20px; }
-            .dashboard { grid-template-columns: repeat(3, 1fr); }
         }
         
         @media (min-width: 768px) {
@@ -606,20 +370,17 @@
             .tab { min-width: auto; padding: 15px; }
             .buttons { flex-direction: row; }
             .btn { width: auto; min-width: 160px; }
-            .note-header { flex-direction: row; }
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- ШАПКА С АНИМАЦИЕЙ -->
         <header class="header">
             <div class="logo">🌌 Aurora</div>
-            <h1>Приватный ИИ-дневник с AI-ассистентом</h1>
-            <p class="tagline">Ваши мысли — только ваши. Умный поиск и AI-подсказки</p>
+            <h1>Приватный ИИ-дневник</h1>
+            <p class="tagline">Ваши мысли — только ваши</p>
         </header>
         
-        <!-- ДАШБОРД СТАТИСТИКИ -->
         <div class="dashboard">
             <div class="stat-card">
                 <div class="stat-icon">📝</div>
@@ -638,19 +399,16 @@
             </div>
         </div>
         
-        <!-- ВКЛАДКИ -->
         <div class="tabs">
             <div class="tab active" data-tab="diary">📝 Дневник + ИИ</div>
-            <div class="tab" data-tab="search">🔍 Умный поиск</div>
+            <div class="tab" data-tab="search">🔍 Поиск</div>
             <div class="tab" data-tab="architecture">🏗️ Архитектура</div>
             <div class="tab" data-tab="security">🛡️ Безопасность</div>
         </div>
         
-        <!-- ВКЛАДКА ДНЕВНИК С ИИ -->
         <div id="diary" class="tab-content active">
-            <!-- ФОРМА С ИИ-ПОДСКАЗКАМИ -->
             <div class="info-block">
-                <h2>✏️ Новая заметка с ИИ-ассистентом</h2>
+                <h2>✏️ Новая заметка</h2>
                 <div class="form-group">
                     <label for="note-title">Заголовок</label>
                     <input type="text" id="note-title" placeholder="О чем эта заметка?">
@@ -658,285 +416,133 @@
                 
                 <div class="form-group">
                     <label for="note-text">Текст заметки</label>
-                    <textarea id="note-text" placeholder="Пишите свободно... ИИ-ассистент предложит полезные подсказки" 
-                              oninput="checkAISuggestions()"></textarea>
+                    <textarea id="note-text" placeholder="Пишите свободно..."></textarea>
                 </div>
                 
-                <!-- ИИ-ПОДСКАЗКИ -->
                 <div id="ai-suggestions" class="ai-suggestions">
-                    <div class="ai-header">
-                        <span class="ai-icon">🤖</span>
-                        <strong>ИИ-ассистент предлагает:</strong>
-                    </div>
                     <div id="ai-tips-container"></div>
                 </div>
                 
                 <div class="form-group">
-                    <label>Теги (добавляйте через Enter)</label>
-                    <div class="tags-input">
-                        <div id="tags-container"></div>
-                        <input type="text" id="new-tag" placeholder="Добавить тег (Enter)" 
-                               onkeypress="if(event.key === 'Enter') addTagFromInput()">
-                    </div>
+                    <label>Теги (через запятую)</label>
+                    <input type="text" id="note-tags" placeholder="идея, бизнес, технологии">
                 </div>
                 
                 <div class="buttons">
-                    <button class="btn btn-primary" id="save-note">
-                        <span class="btn-icon">💾</span> Сохранить с ИИ
-                    </button>
-                    <button class="btn btn-secondary" id="clear-form">
-                        <span class="btn-icon">🗑️</span> Очистить
-                    </button>
+                    <button class="btn btn-primary" id="save-note">💾 Сохранить</button>
+                    <button class="btn" id="clear-form" style="background: #475569; color: white;">🗑️ Очистить</button>
                 </div>
             </div>
             
-            <!-- СПИСОК ЗАМЕТОК -->
             <div class="info-block">
-                <h2>📚 Ваши заметки</h2>
+                <h2>📚 Ваши заметки (<span id="notes-count">0</span>)</h2>
                 <div id="notes-container">
-                    <div class="empty-state">
-                        <p style="font-size: 1.1rem; margin-bottom: 10px;">🎯 Начните вести дневник!</p>
-                        <p>ИИ-ассистент поможет структурировать мысли и предложит полезные идеи</p>
+                    <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                        Здесь пока нет заметок
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- ВКЛАДКА ПРОДВИНУТЫЙ ПОИСК -->
         <div id="search" class="tab-content">
             <div class="info-block">
-                <h2>🔍 Умный гибридный поиск</h2>
-                <p style="color: #94a3b8; margin-bottom: 15px;">Ищет по смыслу, тегам и ключевым словам</p>
-                
-                <div class="search-container">
-                    <div class="search-icon">🔍</div>
-                    <input type="text" id="search-input" placeholder="Попробуйте: #идея, бизнес план, эмоции...">
+                <h2>🔍 Умный поиск</h2>
+                <div style="margin-bottom: 20px;">
+                    <input type="text" id="search-input" placeholder="Ищите: #идея, бизнес, технологии..." 
+                           style="width: 100%; padding: 15px; background: #334155; border: 2px solid #475569; border-radius: 8px; color: white;">
                 </div>
                 
-                <!-- ФИЛЬТРЫ ПОИСКА -->
                 <div class="search-filters">
                     <button class="filter-btn active" data-filter="all">Все</button>
                     <button class="filter-btn" data-filter="recent">Недавние</button>
-                    <button class="filter-btn" data-filter="tags">Только теги</button>
+                    <button class="filter-btn" data-filter="tags">Теги</button>
                     <button class="filter-btn" data-filter="important">Важные</button>
                 </div>
                 
-                <!-- СТАТИСТИКА ПОИСКА -->
-                <div id="search-stats" class="search-stats">
-                    <span>Загружаем поисковый движок...</span>
-                </div>
-                
-                <!-- РЕЗУЛЬТАТЫ ПОИСКА -->
-                <div id="search-results" class="search-results">
-                    <div class="empty-state">
-                        <p>Введите запрос для умного поиска</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">Или попробуйте: <code>#стартап</code>, <code>технологии</code>, <code>личные мысли</code></p>
+                <div id="search-results">
+                    <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                        Введите запрос для поиска
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- ВКЛАДКА АРХИТЕКТУРА -->
         <div id="architecture" class="tab-content">
             <div class="info-block">
                 <h2>🏗️ Архитектура "Куратор & Аналитик"</h2>
-                <p style="color: #94a3b8; margin-bottom: 20px;">Уникальная двухуровневая система для баланса приватности и мощи ИИ</p>
-                
-                <div class="arch-block">
-                    <div class="arch-header">
-                        <div class="arch-icon">🎨</div>
-                        <div>
-                            <h3 style="margin-bottom: 5px;">КУРАТОР (локальный)</h3>
-                            <p style="color: #cbd5e1; font-size: 0.95rem;">Работает на вашем устройстве. Анализирует контекст, удаляет личную информацию, запрашивает разрешение.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="arch-block">
-                    <div class="arch-header">
-                        <div class="arch-icon">📊</div>
-                        <div>
-                            <h3 style="margin-bottom: 5px;">АНАЛИТИК (облачный)</h3>
-                            <p style="color: #cbd5e1; font-size: 0.95rem;">Работает в изолированном zero-trust окружении. Получает только обезличенные данные.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="background: rgba(59, 130, 246, 0.1); padding: 20px; border-radius: 10px; margin-top: 20px;">
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                        <div style="font-size: 1.2rem;">🎛️</div>
-                        <div>
-                            <h3 style="margin-bottom: 5px;">Контроль в ваших руках</h3>
-                            <p style="color: #cbd5e1;">Вы решаете для каждого запроса: 100% локально или осознанный компромисс с облачным ИИ.</p>
-                        </div>
-                    </div>
+                <p style="color: #cbd5e1; margin: 15px 0; line-height: 1.6;">
+                    🎨 <strong>Куратор</strong> — работает локально на устройстве. Анализирует контекст, удаляет личную информацию.
+                </p>
+                <p style="color: #cbd5e1; margin: 15px 0; line-height: 1.6;">
+                    📊 <strong>Аналитик</strong> — работает в изолированном облаке. Получает только обезличенный контекст.
+                </p>
+                <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    🎛️ <strong>Контроль в ваших руках:</strong> Вы решаете для каждого запроса: 100% локально или осознанный компромисс.
                 </div>
             </div>
         </div>
         
-        <!-- ВКЛАДКА БЕЗОПАСНОСТЬ -->
         <div id="security" class="tab-content">
             <div class="info-block">
                 <h2>🛡️ Три уровня приватности</h2>
-                <p style="color: #94a3b8; margin-bottom: 20px;">Осознанный выбор между приватностью и мощью ИИ</p>
-                
-                <div class="security-level">
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                        <div style="font-size: 1.3rem;">🔒</div>
-                        <div>
-                            <h3 style="margin-bottom: 5px;">Уровень 1: "Сейф"</h3>
-                            <p style="color: #cbd5e1;">100% локально на устройстве, без интернета. Быстрые ответы, базовая ИИ-логика.</p>
-                        </div>
+                <div style="margin: 20px 0;">
+                    <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        🔒 <strong>Уровень 1: "Сейф"</strong><br>
+                        100% локально, без интернета
                     </div>
-                </div>
-                
-                <div class="security-level">
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                        <div style="font-size: 1.3rem;">🤝</div>
-                        <div>
-                            <h3 style="margin-bottom: 5px;">Уровень 2: "Советник"</h3>
-                            <p style="color: #cbd5e1;">Осознанный компромисс через архитектуру "Куратор & Аналитик". Вы контролируете данные.</p>
-                        </div>
+                    <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        🤝 <strong>Уровень 2: "Советник"</strong><br>
+                        Осознанный компромисс
                     </div>
-                </div>
-                
-                <div class="security-level">
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                        <div style="font-size: 1.3rem;">💝</div>
-                        <div>
-                            <h3 style="margin-bottom: 5px;">Уровень 3: "Наследие"</h3>
-                            <p style="color: #cbd5e1;">Цифровая капсула времени для передачи близким. Зашифрованный архив мыслей.</p>
-                        </div>
+                    <div style="background: rgba(139, 92, 246, 0.1); padding: 15px; border-radius: 10px;">
+                        💝 <strong>Уровень 3: "Наследие"</strong><br>
+                        Цифровая капсула времени
                     </div>
-                </div>
-                
-                <div style="background: rgba(16, 185, 129, 0.1); padding: 20px; border-radius: 10px; margin-top: 20px;">
-                    <h3 style="color: #10b981; margin-bottom: 10px;">✅ Честность как фича</h3>
-                    <p style="color: #cbd5e1;">Мы не скрываем компромисс приватность/ИИ. Мы даём осознанный контроль и полную прозрачность.</p>
                 </div>
             </div>
         </div>
         
-        <!-- ФУТЕР -->
         <footer class="footer">
-            <p>🌌 Aurora Demo | Приватный ИИ-дневник с AI-ассистентом</p>
+            <p>🌌 Aurora Demo | Приватный ИИ-дневник</p>
             <p style="margin-top: 10px; font-size: 0.9rem;">Работает на GitHub Pages | Архитектура "Куратор & Аналитик"</p>
-            <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Демо-версия | Все данные хранятся локально в вашем браузере</p>
         </footer>
     </div>
 
-    <!-- JavaScript -->
     <script>
-        console.log('🚀 Aurora Demo с ИИ-ассистентом загружается...');
-        
         // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
         let notes = [];
-        let currentTags = [];
         let searchCount = 0;
-        let aiSuggestionsEnabled = true;
         
-        // ==================== ИИ-АССИСТЕНТ ====================
-        class AIAssistant {
-            static analyzeNote(text, title = '') {
-                const suggestions = [];
-                const fullText = (title + ' ' + text).toLowerCase();
-                
-                // Детектор вопросов
-                if (text.includes('?') || /^(почему|как|что|когда|где)/i.test(text)) {
-                    suggestions.push({
-                        icon: '🔍',
-                        text: 'Обнаружен вопрос. Хотите, чтобы я поискал ответы в ваших прошлых заметках?',
-                        type: 'question'
-                    });
-                }
-                
-                // Детектор длинных записей
-                if (text.length > 200) {
-                    suggestions.push({
-                        icon: '📝',
-                        text: 'Обширная запись! Могу выделить ключевые тезисы или предложить структуру.',
-                        type: 'summary'
-                    });
-                }
-                
-                // Детектор задач/дел
-                if (/(задача|сделать|нужно|todo|дело)/i.test(fullText)) {
-                    suggestions.push({
-                        icon: '✅',
-                        text: 'Обнаружена задача. Добавить в список дел или установить напоминание?',
-                        type: 'task'
-                    });
-                }
-                
-                // Детектор эмоций
-                const emotions = {
-                    'радост': '😊 Вижу позитивную заметку! Хотите сохранить это настроение в отдельной коллекции?',
-                    'груст': '🤗 Заметка кажется грустной. Могу предложить успокаивающие записи из вашего дневника.',
-                    'зло': '😤 Чувствую напряжение. Хотите преобразовать это в мотивацию или план действий?',
-                    'устал': '😴 Похоже на усталость. Могу предложить техники отдыха или напомнить о перерывах.'
-                };
-                
-                for (const [emotion, message] of Object.entries(emotions)) {
-                    if (fullText.includes(emotion)) {
-                        suggestions.push({
-                            icon: emotion === 'радост' ? '😊' : emotion === 'груст' ? '🤗' : '😤',
-                            text: message,
-                            type: 'emotion'
-                        });
-                        break;
-                    }
-                }
-                
-                // Детектор идей
-                if (/(идея|придумал|интересно|мысль)/i.test(fullText)) {
-                    suggestions.push({
-                        icon: '💡',
-                        text: 'Отличная идея! Хотите создать отдельную коллекцию идей или добавить теги для быстрого поиска?',
-                        type: 'idea'
-                    });
-                }
-                
-                // Детектор людей
-                if (/@\w+|(друг|коллега|семья)/i.test(fullText)) {
-                    suggestions.push({
-                        icon: '👥',
-                        text: 'Упомянуты люди. Добавить связи или теги для организации заметок по отношениям?',
-                        type: 'people'
-                    });
-                }
-                
-                // Детектор дат/событий
-                if (/\d{1,2}[\.\/]\d{1,2}[\.\/]\d{2,4}|\d+ (янв|фев|мар|апр|май|июн|июл|авг|сен|окт|ноя|дек)/i.test(fullText)) {
-                    suggestions.push({
-                        icon: '📅',
-                        text: 'Обнаружена дата. Создать напоминание или связать с календарем?',
-                        type: 'date'
-                    });
-                }
-                
-                return suggestions.slice(0, 3); // Максимум 3 подсказки
+        // ==================== ДЕМО-ЗАМЕТКИ ====================
+        const demoNotes = [
+            {
+                id: 1,
+                title: "Идея для Aurora",
+                text: "Создать приватный ИИ-дневник с архитектурой 'Куратор & Аналитик'. Как сделать это максимально удобным для пользователя?",
+                tags: ["идея", "стартап", "ии"],
+                date: "15 января 2024",
+                hasQuestions: true
+            },
+            {
+                id: 2,
+                title: "Техническая разработка",
+                text: "Гибридный поиск должен работать по ключевым словам, тегам и смыслу. Задача: сделать так, чтобы даже новички чувствовали себя уверенно.",
+                tags: ["технологии", "разработка", "поиск"],
+                date: "16 января 2024"
+            },
+            {
+                id: 3,
+                title: "Бизнес-план и монетизация",
+                text: "Подписка ~299 руб/мес кажется справедливой ценой. Краудфандинг на Boomstarter для запуска MVP. Почему инвесторы должны поверить в нас?",
+                tags: ["бизнес", "монетизация", "инвестиции"],
+                date: "17 января 2024",
+                hasQuestions: true
             }
-            
-            static generateSmartTags(text) {
-                const tags = [];
-                const words = text.toLowerCase().split(/\s+/);
-                
-                // Автоматические теги на основе содержания
-                if (/(бизнес|стартап|компания|проект)/i.test(text)) tags.push('бизнес');
-                if (/(технолог|код|программ|разработ)/i.test(text)) tags.push('технологии');
-                if (/(личн|семья|отношен|чувств)/i.test(text)) tags.push('личное');
-                if (/(идея|мысль|креатив)/i.test(text)) tags.push('идея');
-                if (/(план|цель|задача)/i.test(text)) tags.push('план');
-                if (/(здоров|спорт|питани)/i.test(text)) tags.push('здоровье');
-                if (/(книг|фильм|музык|искусств)/i.test(text)) tags.push('культура');
-                
-                return [...new Set(tags)]; // Уникальные теги
-            }
-        }
+        ];
         
         // ==================== ОСНОВНАЯ ИНИЦИАЛИЗАЦИЯ ====================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ DOM загружен, инициализируем Aurora...');
+            console.log('Aurora Demo загружен');
             
             initTabs();
             initDiary();
@@ -944,14 +550,12 @@
             loadNotes();
             updateDashboard();
             
-            // Добавляем демо-подсказку
+            // Автоматически показываем ИИ-подсказку для демо
             setTimeout(() => {
                 if (notes.length === 0) {
-                    showNotification('🎯 Начните с первой заметки! ИИ-ассистент поможет.');
+                    showNotification('🎯 Начните с первой заметки!');
                 }
-            }, 1500);
-            
-            console.log('✅ Aurora с ИИ-ассистентом готов к работе!');
+            }, 1000);
         });
         
         // ==================== СИСТЕМА ВКЛАДОК ====================
@@ -971,56 +575,44 @@
                     document.getElementById(tabId).classList.add('active');
                 });
             });
-            
-            console.log('✅ Вкладки инициализированы');
         }
         
-        // ==================== СИСТЕМА ДНЕВНИКА С ИИ ====================
+        // ==================== СИСТЕМА ДНЕВНИКА ====================
         function initDiary() {
             const saveBtn = document.getElementById('save-note');
             const clearBtn = document.getElementById('clear-form');
             const noteText = document.getElementById('note-text');
-            const newTagInput = document.getElementById('new-tag');
             
             if (saveBtn) {
-                saveBtn.addEventListener('click', saveNoteWithAI);
-                console.log('✅ Кнопка сохранения с ИИ подключена');
+                saveBtn.addEventListener('click', saveNote);
             }
             
             if (clearBtn) {
                 clearBtn.addEventListener('click', clearForm);
             }
             
-            if (newTagInput) {
-                newTagInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        addTagFromInput();
-                        e.preventDefault();
-                    }
-                });
+            // ИИ-подсказки при вводе текста
+            if (noteText) {
+                noteText.addEventListener('input', checkAISuggestions);
             }
             
             // Автофокус на поле текста
-            if (noteText) {
-                setTimeout(() => noteText.focus(), 300);
-            }
-            
-            console.log('✅ Дневник с ИИ инициализирован');
+            setTimeout(() => {
+                if (noteText) noteText.focus();
+            }, 300);
         }
         
-        // ==================== ИИ-ПОДСКАЗКИ В РЕАЛЬНОМ ВРЕМЕНИ ====================
+        // ==================== ИИ-ПОДСКАЗКИ ====================
         function checkAISuggestions() {
-            if (!aiSuggestionsEnabled) return;
-            
             const text = document.getElementById('note-text').value;
             const title = document.getElementById('note-title').value;
             
-            if (text.length < 10) {
+            if (text.length < 5) {
                 document.getElementById('ai-suggestions').classList.remove('active');
                 return;
             }
             
-            const suggestions = AIAssistant.analyzeNote(text, title);
+            const suggestions = analyzeTextWithAI(text, title);
             const container = document.getElementById('ai-tips-container');
             
             if (suggestions.length === 0) {
@@ -1028,55 +620,68 @@
                 return;
             }
             
-            let html = '';
-            suggestions.forEach((tip, index) => {
-                html += `
-                    <div class="ai-tip">
-                        <span class="tip-icon">${tip.icon}</span>
-                        <span>${tip.text}</span>
-                    </div>
-                `;
+            let html = '<div style="color: #10b981; margin-bottom: 10px; font-weight: 500;">🤖 ИИ-ассистент предлагает:</div>';
+            suggestions.forEach(tip => {
+                html += `<div class="ai-tip">${tip}</div>`;
             });
             
             container.innerHTML = html;
             document.getElementById('ai-suggestions').classList.add('active');
         }
         
-        // ==================== СОХРАНЕНИЕ ЗАМЕТКИ С ИИ ====================
-        function saveNoteWithAI() {
-            console.log('Сохранение заметки с ИИ-анализом...');
+        function analyzeTextWithAI(text, title) {
+            const suggestions = [];
+            const fullText = (title + ' ' + text).toLowerCase();
             
+            // 1. Детектор вопросов
+            if (text.includes('?')) {
+                suggestions.push('🔍 Это вопрос? Я могу помочь найти ответы в ваших прошлых заметках.');
+            }
+            
+            // 2. Детектор длинных текстов
+            if (text.length > 100) {
+                suggestions.push('📝 Обширная запись! Могу выделить ключевые тезисы.');
+            }
+            
+            // 3. Детектор задач
+            if (/(задача|сделать|нужно|todo)/i.test(fullText)) {
+                suggestions.push('✅ Обнаружена задача. Добавить в список дел?');
+            }
+            
+            // 4. Детектор идей
+            if (/(идея|придумал|интересно)/i.test(fullText)) {
+                suggestions.push('💡 Отличная идея! Хотите создать отдельную коллекцию идей?');
+            }
+            
+            // 5. Детектор эмоций
+            if (/(радост|счаст|ура)/i.test(fullText)) {
+                suggestions.push('😊 Вижу позитив! Сохранить это настроение?');
+            }
+            
+            return suggestions.slice(0, 3); // Максимум 3 подсказки
+        }
+        
+        // ==================== СОХРАНЕНИЕ ЗАМЕТКИ ====================
+        function saveNote() {
             const title = document.getElementById('note-title').value.trim();
             const text = document.getElementById('note-text').value.trim();
+            const tagsInput = document.getElementById('note-tags').value.trim();
             
             if (!title && !text) {
                 showNotification('📝 Напишите что-нибудь перед сохранением');
                 return;
             }
             
-            // Генерация умных тегов если пользователь не добавил свои
-            let tags = [...currentTags];
-            if (tags.length === 0) {
-                tags = AIAssistant.generateSmartTags(title + ' ' + text);
-            }
+            const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : [];
             
             const newNote = {
                 id: Date.now(),
                 title: title || 'Без названия',
                 text: text,
                 tags: tags,
-                date: new Date().toLocaleDateString('ru-RU', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                }),
+                date: new Date().toLocaleDateString('ru-RU'),
                 timestamp: Date.now(),
-                aiAnalyzed: true,
-                hasQuestions: text.includes('?'),
-                isLong: text.length > 200,
-                emotion: detectEmotion(text)
+                hasQuestions: text.includes('?')
             };
             
             notes.unshift(newNote);
@@ -1085,66 +690,45 @@
             clearForm();
             updateDashboard();
             
-            // Показываем умное уведомление
-            const notificationText = tags.length > 0 
-                ? `✅ Сохранено с тегами: ${tags.map(t => `#${t}`).join(', ')}`
-                : '✅ Заметка сохранена! ИИ проанализировал содержание';
-            
-            showNotification(notificationText);
-            console.log('Заметка сохранена с ИИ-анализом:', newNote);
+            showNotification('✅ Заметка сохранена!');
         }
         
-        function detectEmotion(text) {
-            const lowerText = text.toLowerCase();
-            if (/(радост|счаст|ура|отлично|прекрасно)/.test(lowerText)) return 'happy';
-            if (/(груст|печаль|плохо|устал|тяжело)/.test(lowerText)) return 'sad';
-            if (/(зло|сердит|раздраж|бесит)/.test(lowerText)) return 'angry';
-            if (/(страх|боюсь|тревог|опасен)/.test(lowerText)) return 'fear';
-            return 'neutral';
+        function clearForm() {
+            document.getElementById('note-title').value = '';
+            document.getElementById('note-text').value = '';
+            document.getElementById('note-tags').value = '';
+            document.getElementById('ai-suggestions').classList.remove('active');
         }
         
-        // ==================== СИСТЕМА ТЕГОВ ====================
-        function addTagFromInput() {
-            const input = document.getElementById('new-tag');
-            const tagText = input.value.trim();
+        // ==================== ЗАГРУЗКА И СОХРАНЕНИЕ ====================
+        function loadNotes() {
+            const saved = localStorage.getItem('aurora-notes');
             
-            if (tagText && !currentTags.includes(tagText)) {
-                addTag(tagText);
-                input.value = '';
+            if (saved) {
+                try {
+                    notes = JSON.parse(saved);
+                } catch (e) {
+                    notes = [...demoNotes];
+                    saveToLocalStorage();
+                }
+            } else {
+                notes = [...demoNotes];
+                saveToLocalStorage();
             }
-        }
-        
-        function addTag(tagText) {
-            if (!tagText || currentTags.includes(tagText)) return;
             
-            currentTags.push(tagText);
-            renderTags();
+            renderNotes();
+            updateDashboard();
         }
         
-        function removeTag(tagText) {
-            currentTags = currentTags.filter(tag => tag !== tagText);
-            renderTags();
-        }
-        
-        function renderTags() {
-            const container = document.getElementById('tags-container');
-            container.innerHTML = '';
-            
-            currentTags.forEach(tag => {
-                const tagElement = document.createElement('span');
-                tagElement.className = 'tag';
-                tagElement.innerHTML = `
-                    ${tag}
-                    <span class="tag-remove" onclick="removeTag('${tag}')">×</span>
-                `;
-                container.appendChild(tagElement);
-            });
+        function saveToLocalStorage() {
+            localStorage.setItem('aurora-notes', JSON.stringify(notes));
         }
         
         // ==================== ОБНОВЛЕНИЕ ДАШБОРДА ====================
         function updateDashboard() {
             // Общее количество заметок
             document.getElementById('total-notes').textContent = notes.length;
+            document.getElementById('notes-count').textContent = notes.length;
             
             // Уникальные теги
             const allTags = notes.flatMap(note => note.tags || []);
@@ -1155,82 +739,14 @@
             document.getElementById('search-count').textContent = searchCount;
         }
         
-        // ==================== ЗАГРУЗКА И СОХРАНЕНИЕ ДАННЫХ ====================
-        function loadNotes() {
-            const saved = localStorage.getItem('aurora-notes');
-            
-            if (saved) {
-                try {
-                    notes = JSON.parse(saved);
-                    console.log(`Загружено ${notes.length} заметок из localStorage`);
-                } catch (e) {
-                    console.error('Ошибка загрузки заметок:', e);
-                    notes = getDemoNotes();
-                    saveToLocalStorage();
-                }
-            } else {
-                notes = getDemoNotes();
-                saveToLocalStorage();
-                console.log('Добавлены демо-заметки с ИИ-анализом');
-            }
-            
-            renderNotes();
-            updateDashboard();
-        }
-        
-        function getDemoNotes() {
-            return [
-                {
-                    id: 1,
-                    title: "Идея для Aurora",
-                    text: "Создать приватный ИИ-дневник с архитектурой 'Куратор & Аналитик'. Баланс между приватностью и мощью искусственного интеллекта. Как сделать это максимально удобным для пользователя?",
-                    tags: ["идея", "стартап", "ии"],
-                    date: "15 января 2024, 10:30",
-                    timestamp: 1705311000000,
-                    aiAnalyzed: true,
-                    hasQuestions: true,
-                    isLong: true,
-                    emotion: "happy"
-                },
-                {
-                    id: 2,
-                    title: "Техническая разработка",
-                    text: "Гибридный поиск должен работать по ключевым словам, тегам и смыслу. Пользовательский интерфейс — минималистичный и интуитивный. Задача: сделать так, чтобы даже новички чувствовали себя уверенно.",
-                    tags: ["технологии", "разработка", "поиск"],
-                    date: "16 января 2024, 14:20",
-                    timestamp: 1705396800000,
-                    aiAnalyzed: true,
-                    hasQuestions: false,
-                    isLong: true,
-                    emotion: "neutral"
-                },
-                {
-                    id: 3,
-                    title: "Бизнес-план и монетизация",
-                    text: "Подписка ~299 руб/мес кажется справедливой ценой. Краудфандинг на Boomstarter для запуска MVP. Нужно найти технического сооснователя — это сложно, но возможно. Почему инвесторы должны поверить в нас?",
-                    tags: ["бизнес", "монетизация", "план", "инвестиции"],
-                    date: "17 января 2024, 09:15",
-                    timestamp: 1705479300000,
-                    aiAnalyzed: true,
-                    hasQuestions: true,
-                    isLong: true,
-                    emotion: "neutral"
-                }
-            ];
-        }
-        
-        function saveToLocalStorage() {
-            localStorage.setItem('aurora-notes', JSON.stringify(notes));
-        }
-        
+        // ==================== РЕНДЕРИНГ ЗАМЕТОК ====================
         function renderNotes() {
             const container = document.getElementById('notes-container');
             
             if (notes.length === 0) {
                 container.innerHTML = `
-                    <div class="empty-state">
-                        <p style="font-size: 1.1rem; margin-bottom: 10px;">🎯 Начните вести дневник!</p>
-                        <p>ИИ-ассистент поможет структурировать мысли и предложит полезные идеи</p>
+                    <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                        Здесь пока нет заметок
                     </div>
                 `;
                 return;
@@ -1239,25 +755,16 @@
             let html = '';
             
             notes.forEach(note => {
-                const emotionIcon = note.emotion === 'happy' ? '😊' : 
-                                  note.emotion === 'sad' ? '😔' : 
-                                  note.emotion === 'angry' ? '😠' : '😐';
-                
                 html += `
                     <div class="note-card">
                         <div class="note-header">
-                            <div>
-                                <div class="note-title">${note.title} ${note.aiAnalyzed ? '🤖' : ''}</div>
-                                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 4px;">
-                                    ${emotionIcon} ${note.hasQuestions ? '❓' : ''} ${note.isLong ? '📖' : ''}
-                                </div>
-                            </div>
-                            <div class="note-date">${note.date}</div>
+                            <div class="note-title">${note.title} ${note.hasQuestions ? '❓' : ''}</div>
+                            <div style="color: #94a3b8; font-size: 0.9rem;">${note.date}</div>
                         </div>
                         <div class="note-text">${note.text}</div>
                         ${note.tags && note.tags.length > 0 ? `
-                            <div>
-                                ${note.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                            <div style="margin-top: 10px;">
+                                ${note.tags.map(tag => `<span style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; margin-right: 6px;">#${tag}</span>`).join('')}
                             </div>
                         ` : ''}
                     </div>
@@ -1267,7 +774,7 @@
             container.innerHTML = html;
         }
         
-        // ==================== ПРОДВИНУТЫЙ ПОИСК С ФИЛЬТРАМИ ====================
+        // ==================== ПОИСК ====================
         function initSearch() {
             const searchInput = document.getElementById('search-input');
             const filterBtns = document.querySelectorAll('.filter-btn');
@@ -1276,104 +783,65 @@
                 searchInput.addEventListener('input', function(e) {
                     searchCount++;
                     updateDashboard();
-                    performAdvancedSearch(e.target.value.trim());
+                    performSearch(e.target.value.trim());
                 });
             }
             
-            // Фильтры поиска
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     filterBtns.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                     const currentQuery = searchInput.value.trim();
                     if (currentQuery) {
-                        performAdvancedSearch(currentQuery);
+                        performSearch(currentQuery);
                     }
                 });
             });
-            
-            console.log('✅ Продвинутый поиск инициализирован');
         }
         
-        function performAdvancedSearch(query) {
+        function performSearch(query) {
             const resultsContainer = document.getElementById('search-results');
-            const statsContainer = document.getElementById('search-stats');
             const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
             
             if (!query) {
                 resultsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <p>Введите запрос для умного поиска</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">Или попробуйте: <code>#стартап</code>, <code>технологии</code>, <code>личные мысли</code></p>
+                    <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                        Введите запрос для поиска
                     </div>
                 `;
-                statsContainer.innerHTML = 'Введите запрос для поиска';
                 return;
             }
             
-            // Поиск с учетом фильтра
             let results = notes.filter(note => {
-                // Базовый поиск
                 const matchesText = note.title.toLowerCase().includes(query.toLowerCase()) || 
                                    note.text.toLowerCase().includes(query.toLowerCase());
-                
-                // Поиск по тегам
                 const matchesTags = note.tags && note.tags.some(tag => 
                     tag.toLowerCase().includes(query.toLowerCase().replace('#', ''))
                 );
                 
-                // Поиск по смыслу (упрощенный)
-                const queryWords = query.toLowerCase().split(' ').filter(w => w.length > 2);
-                const matchesMeaning = queryWords.some(word => 
-                    note.text.toLowerCase().includes(word) || 
-                    note.title.toLowerCase().includes(word)
-                );
+                let baseMatch = matchesText || matchesTags;
                 
-                let baseMatch = matchesText || matchesTags || matchesMeaning;
-                
-                // Применяем фильтр
                 if (activeFilter === 'recent') {
                     const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
                     baseMatch = baseMatch && note.timestamp > weekAgo;
                 } else if (activeFilter === 'tags') {
                     baseMatch = matchesTags;
                 } else if (activeFilter === 'important') {
-                    baseMatch = baseMatch && (note.hasQuestions || note.tags?.includes('важно'));
+                    baseMatch = baseMatch && note.hasQuestions;
                 }
                 
                 return baseMatch;
             });
             
-            // Расчет релевантности
             results = results.map(note => {
                 let score = 0;
-                
-                // Заголовок
                 if (note.title.toLowerCase().includes(query.toLowerCase())) score += 50;
-                
-                // Текст
                 if (note.text.toLowerCase().includes(query.toLowerCase())) score += 30;
-                
-                // Теги
                 if (note.tags) {
                     note.tags.forEach(tag => {
                         if (tag.toLowerCase().includes(query.toLowerCase().replace('#', ''))) score += 40;
                     });
                 }
-                
-                // Совпадения по словам
-                const queryWords = query.toLowerCase().split(' ').filter(w => w.length > 2);
-                queryWords.forEach(word => {
-                    if (note.title.toLowerCase().includes(word)) score += 20;
-                    if (note.text.toLowerCase().includes(word)) score += 10;
-                });
-                
-                // Бонус за недавние
-                const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-                if (note.timestamp > weekAgo) score += 15;
-                
-                // Бонус за ИИ-анализ
-                if (note.aiAnalyzed) score += 10;
                 
                 return {
                     note: note,
@@ -1382,68 +850,43 @@
                 };
             });
             
-            // Сортировка
             results.sort((a, b) => b.score - a.score);
             
-            // Статистика
-            statsContainer.innerHTML = `
-                Найдено <strong>${results.length}</strong> результатов для "<strong>${query}</strong>"
-                <span style="margin-left: 10px; font-size: 0.85rem; color: #94a3b8;">
-                    Фильтр: ${getFilterName(activeFilter)}
-                </span>
-            `;
-            
-            // Отображение результатов
             if (results.length === 0) {
                 resultsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <p>По запросу "<strong>${query}</strong>" ничего не найдено</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">
-                            Попробуйте другой запрос или измените фильтр поиска
-                        </p>
+                    <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                        По запросу "<strong>${query}</strong>" ничего не найдено
                     </div>
                 `;
                 return;
             }
             
-            let html = '';
+            let html = `
+                <div style="margin-bottom: 20px; color: #94a3b8;">
+                    Найдено <strong>${results.length}</strong> результатов для "<strong>${query}</strong>"
+                </div>
+            `;
             
-            results.forEach((result, index) => {
+            results.forEach(result => {
                 const relevance = result.relevance;
-                const relevanceColor = relevance > 80 ? '#10b981' : 
-                                      relevance > 60 ? '#3b82f6' : 
-                                      relevance > 40 ? '#f59e0b' : '#ef4444';
-                
-                // Иконки характеристик заметки
-                let features = '';
-                if (result.note.aiAnalyzed) features += '🤖 ';
-                if (result.note.hasQuestions) features += '❓ ';
-                if (result.note.isLong) features += '📖 ';
+                const color = relevance > 80 ? '#10b981' : 
+                              relevance > 60 ? '#3b82f6' : 
+                              relevance > 40 ? '#f59e0b' : '#ef4444';
                 
                 html += `
                     <div class="note-card">
                         <div class="note-header">
-                            <div>
-                                <div class="note-title">${result.note.title}</div>
-                                <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 4px;">
-                                    ${features}
-                                </div>
-                            </div>
-                            <div class="relevance-badge" style="background: ${relevanceColor}">
+                            <div class="note-title">${result.note.title}</div>
+                            <div class="relevance-badge" style="background: ${color}">
                                 ${relevance}%
                             </div>
                         </div>
-                        <div class="note-text">
-                            ${result.note.text.substring(0, 150)}${result.note.text.length > 150 ? '...' : ''}
-                        </div>
+                        <div class="note-text">${result.note.text}</div>
                         ${result.note.tags && result.note.tags.length > 0 ? `
-                            <div>
-                                ${result.note.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                            <div style="margin-top: 10px;">
+                                ${result.note.tags.map(tag => `<span style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; margin-right: 6px;">#${tag}</span>`).join('')}
                             </div>
                         ` : ''}
-                        <div style="margin-top: 10px; font-size: 0.85rem; color: #94a3b8;">
-                            Найдено по: ${getSearchReason(result.note, query)}
-                        </div>
                     </div>
                 `;
             });
@@ -1451,63 +894,21 @@
             resultsContainer.innerHTML = html;
         }
         
-        function getFilterName(filter) {
-            const names = {
-                'all': 'Все заметки',
-                'recent': 'Недавние (7 дней)',
-                'tags': 'Только по тегам',
-                'important': 'Важные'
-            };
-            return names[filter] || filter;
-        }
-        
-        function getSearchReason(note, query) {
-            const reasons = [];
-            const queryLower = query.toLowerCase();
-            
-            if (note.title.toLowerCase().includes(queryLower)) reasons.push('заголовок');
-            if (note.text.toLowerCase().includes(queryLower)) reasons.push('текст');
-            if (note.tags && note.tags.some(tag => tag.toLowerCase().includes(queryLower.replace('#', '')))) {
-                reasons.push('теги');
-            }
-            
-            return reasons.join(', ') || 'смыслу';
-        }
-        
-        // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
-        function clearForm() {
-            document.getElementById('note-title').value = '';
-            document.getElementById('note-text').value = '';
-            document.getElementById('ai-suggestions').classList.remove('active');
-            currentTags = [];
-            renderTags();
-            showNotification('🗑️ Форма очищена');
-        }
-        
+        // ==================== УВЕДОМЛЕНИЯ ====================
         function showNotification(message) {
-            // Удаляем старые уведомления
-            document.querySelectorAll('.notification').forEach(el => el.remove());
-            
-            // Создаем новое
             const notification = document.createElement('div');
             notification.className = 'notification';
-            notification.innerHTML = message;
+            notification.textContent = message;
             
             document.body.appendChild(notification);
             
-            // Удаляем через 3 секунды
             setTimeout(() => {
                 notification.style.animation = 'slideInRight 0.3s ease reverse';
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
         
-        // ==================== ГЛОБАЛЬНЫЕ ФУНКЦИИ ====================
-        window.addTagFromInput = addTagFromInput;
-        window.removeTag = removeTag;
-        window.checkAISuggestions = checkAISuggestions;
-        
-        console.log('✅ Все системы Aurora с ИИ инициализированы!');
+        console.log('✅ Aurora Demo с исправленным ИИ готов к работе!');
     </script>
 </body>
 </html>
