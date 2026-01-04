@@ -5,501 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aurora Demo - Приватный ИИ-дневник</title>
     
-    <!-- Все стили в одном файле -->
     <style>
-        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f172a;
-            color: #f8fafc;
+        /* ОСНОВНЫЕ СТИЛИ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: #0f172a; 
+            color: #f8fafc; 
             min-height: 100vh;
-        }
-        
-        .app-container {
-            max-width: 1200px;
-            margin: 0 auto;
             padding: 20px;
         }
         
-        /* ===== ШАПКА ===== */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            border-radius: 15px;
+        .app-container { max-width: 1000px; margin: 0 auto; }
+        
+        /* ШАПКА */
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            padding: 25px; 
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); 
+            border-radius: 15px; 
             box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
         }
+        .logo { font-size: 2.5rem; margin-bottom: 10px; }
+        h1 { font-size: 2rem; margin-bottom: 10px; }
+        .tagline { color: #e2e8f0; font-size: 1.1rem; opacity: 0.9; }
         
-        .logo {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        /* ВКЛАДКИ */
+        .tabs { 
+            display: flex; 
+            background: #1e293b; 
+            border-radius: 12px; 
+            padding: 5px; 
+            margin-bottom: 30px; 
         }
-        
-        .tagline {
-            color: #e2e8f0;
-            font-size: 1.1rem;
-            opacity: 0.9;
+        .tab { 
+            flex: 1; 
+            padding: 15px; 
+            text-align: center; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            transition: all 0.3s; 
         }
+        .tab:hover { background: #334155; }
+        .tab.active { background: #3b82f6; color: white; }
         
-        /* ===== ВКЛАДКИ ===== */
-        .tabs {
-            display: flex;
-            background: #1e293b;
-            border-radius: 12px;
-            padding: 5px;
-            margin-bottom: 30px;
-            overflow-x: auto;
+        .tab-content { display: none; padding: 20px; }
+        .tab-content.active { display: block; }
+        
+        /* ФОРМА ЗАМЕТКИ */
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #cbd5e1; }
+        input[type="text"], textarea { 
+            width: 100%; 
+            padding: 12px; 
+            background: #334155; 
+            border: 2px solid #475569; 
+            border-radius: 10px; 
+            color: white; 
+            font-size: 16px; 
         }
+        textarea { min-height: 120px; resize: vertical; }
         
-        .tab {
+        .buttons { display: flex; gap: 15px; margin-top: 20px; }
+        .btn { 
+            padding: 12px 25px; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            transition: all 0.3s; 
             flex: 1;
-            padding: 15px 20px;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s;
-            font-weight: 500;
-            white-space: nowrap;
+        }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-secondary { background: #475569; color: white; }
+        .btn-secondary:hover { background: #64748b; }
+        
+        /* СПИСОК ЗАМЕТОК */
+        .notes-list { margin-top: 30px; }
+        .note-card { 
+            background: #334155; 
+            border-radius: 12px; 
+            padding: 20px; 
+            margin-bottom: 15px; 
+            border-left: 4px solid #3b82f6; 
+        }
+        .note-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .note-title { font-size: 1.2rem; font-weight: bold; }
+        .note-date { color: #94a3b8; font-size: 0.9rem; }
+        .note-text { color: #cbd5e1; line-height: 1.5; margin-bottom: 10px; }
+        
+        /* ПОИСК */
+        .search-box { margin-bottom: 20px; }
+        #search-input { 
+            width: 100%; 
+            padding: 15px; 
+            background: #334155; 
+            border: 2px solid #475569; 
+            border-radius: 10px; 
+            color: white; 
+            font-size: 16px; 
         }
         
-        .tab:hover {
-            background: #334155;
+        /* АРХИТЕКТУРА И БЕЗОПАСНОСТЬ */
+        .info-block { 
+            background: #1e293b; 
+            border-radius: 15px; 
+            padding: 30px; 
+            margin-bottom: 20px; 
         }
         
-        .tab.active {
-            background: #3b82f6;
-            color: white;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        /* ФУТЕР */
+        .footer { 
+            text-align: center; 
+            margin-top: 50px; 
+            padding: 20px; 
+            color: #94a3b8; 
+            border-top: 1px solid #334155; 
         }
         
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        /* ===== ВКЛАДКА ДНЕВНИК ===== */
-        .diary-container {
-            background: #1e293b;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 20px;
-        }
-        
-        .note-form {
-            margin-bottom: 30px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
+        /* УТИЛИТЫ */
+        .hidden { display: none !important; }
+        .empty-state { text-align: center; padding: 40px; color: #94a3b8; }
+        .tag { 
+            background: rgba(59, 130, 246, 0.2); 
+            color: #60a5fa; 
+            padding: 4px 12px; 
+            border-radius: 15px; 
+            font-size: 0.85rem; 
+            display: inline-block; 
+            margin-right: 8px; 
             margin-bottom: 8px;
-            color: #cbd5e1;
-            font-weight: 500;
-        }
-        
-        input[type="text"],
-        textarea {
-            width: 100%;
-            padding: 15px;
-            background: #334155;
-            border: 2px solid #475569;
-            border-radius: 10px;
-            color: #f8fafc;
-            font-size: 16px;
-            transition: border 0.3s;
-        }
-        
-        input[type="text"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #3b82f6;
-        }
-        
-        textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-        
-        .tags-input {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .tag {
-            background: #3b82f6;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .tag-remove {
-            cursor: pointer;
-            font-size: 18px;
-            line-height: 1;
-        }
-        
-        #new-tag {
-            flex: 1;
-            min-width: 120px;
-        }
-        
-        .buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-        
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .btn-primary {
-            background: #3b82f6;
-            color: white;
-            flex: 1;
-        }
-        
-        .btn-primary:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-        }
-        
-        .btn-secondary {
-            background: #475569;
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background: #64748b;
-        }
-        
-        /* ===== СПИСОК ЗАМЕТОК ===== */
-        .notes-list {
-            margin-top: 30px;
-        }
-        
-        .notes-list h3 {
-            margin-bottom: 20px;
-            color: #cbd5e1;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .note-card {
-            background: #334155;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid #3b82f6;
-            transition: all 0.3s;
-        }
-        
-        .note-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-        
-        .note-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-        
-        .note-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #f8fafc;
-        }
-        
-        .note-date {
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-        
-        .note-text {
-            color: #cbd5e1;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-        
-        .note-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        
-        .note-tag {
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.85rem;
-        }
-        
-        /* ===== ВКЛАДКА ПОИСК ===== */
-        .search-container {
-            background: #1e293b;
-            border-radius: 15px;
-            padding: 30px;
-        }
-        
-        .search-box {
-            position: relative;
-            margin-bottom: 30px;
-        }
-        
-        #search-input {
-            width: 100%;
-            padding: 18px 20px;
-            padding-left: 50px;
-            font-size: 16px;
-            background: #334155;
-            border: 2px solid #475569;
-            border-radius: 12px;
-            color: #f8fafc;
-            transition: all 0.3s;
-        }
-        
-        #search-input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-        
-        .search-icon {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-            font-size: 20px;
-        }
-        
-        .search-stats {
-            background: rgba(59, 130, 246, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            color: #60a5fa;
-            font-size: 0.9rem;
-        }
-        
-        .search-results {
-            min-height: 200px;
-        }
-        
-        .search-result {
-            background: #334155;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid #10b981;
-            transition: all 0.3s;
-        }
-        
-        .search-result:hover {
-            transform: translateX(5px);
-        }
-        
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .result-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #f8fafc;
-        }
-        
-        .relevance-badge {
-            background: linear-gradient(135deg, #10b981, #3b82f6);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-        
-        /* ===== ВКЛАДКА АРХИТЕКТУРА ===== */
-        .architecture-content {
-            background: #1e293b;
-            border-radius: 15px;
-            padding: 30px;
-        }
-        
-        .architecture-diagram {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin: 30px 0;
-        }
-        
-        @media (max-width: 768px) {
-            .architecture-diagram {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .arch-block {
-            background: #334155;
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .arch-block:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .arch-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-        
-        .arch-title {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            color: #f8fafc;
-        }
-        
-        .arch-desc {
-            color: #cbd5e1;
-            line-height: 1.6;
-        }
-        
-        /* ===== ВКЛАДКА БЕЗОПАСНОСТЬ ===== */
-        .security-content {
-            background: #1e293b;
-            border-radius: 15px;
-            padding: 30px;
-        }
-        
-        .security-levels {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-        
-        .level-card {
-            background: #334155;
-            border-radius: 15px;
-            padding: 25px;
-            border-top: 5px solid;
-        }
-        
-        .level-1 { border-color: #10b981; }
-        .level-2 { border-color: #3b82f6; }
-        .level-3 { border-color: #8b5cf6; }
-        
-        .level-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .level-icon {
-            font-size: 1.8rem;
-        }
-        
-        .level-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #f8fafc;
-        }
-        
-        /* ===== ФУТЕР ===== */
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            color: #94a3b8;
-            font-size: 0.9rem;
-            border-top: 1px solid #334155;
-        }
-        
-        /* ===== АНИМАЦИИ ===== */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* ===== АДАПТИВНОСТЬ ===== */
-        @media (max-width: 768px) {
-            .tabs {
-                flex-wrap: wrap;
-            }
-            
-            .tab {
-                min-width: calc(50% - 10px);
-                padding: 12px 15px;
-                font-size: 0.9rem;
-            }
-            
-            .diary-container,
-            .search-container,
-            .architecture-content,
-            .security-content {
-                padding: 20px;
-            }
-            
-            .buttons {
-                flex-direction: column;
-            }
-        }
-        
-        /* ===== УТИЛИТЫ ===== */
-        .hidden {
-            display: none !important;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #94a3b8;
-        }
-        
-        .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            opacity: 0.5;
         }
     </style>
 </head>
@@ -509,7 +146,7 @@
         <header class="header">
             <div class="logo">🌌 Aurora</div>
             <h1>Приватный ИИ-дневник</h1>
-            <p class="tagline">Ваши мысли — только ваши. Гибридный поиск с архитектурой "Куратор & Аналитик"</p>
+            <p class="tagline">Ваши мысли — только ваши</p>
         </header>
         
         <!-- ВКЛАДКИ -->
@@ -521,72 +158,50 @@
         </div>
         
         <!-- ВКЛАДКА ДНЕВНИК -->
-        <div class="tab-content active" id="diary">
-            <div class="diary-container">
-                <!-- ФОРМА ДОБАВЛЕНИЯ ЗАМЕТКИ -->
-                <div class="note-form">
-                    <h2>✏️ Новая заметка</h2>
-                    <div class="form-group">
-                        <label for="note-title">Заголовок</label>
-                        <input type="text" id="note-title" placeholder="О чем эта заметка?">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="note-text">Текст заметки</label>
-                        <textarea id="note-text" placeholder="Пишите свободно... ИИ-ассистент поможет структурировать мысли"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Теги</label>
-                        <div class="tags-input">
-                            <div id="tags-container"></div>
-                            <input type="text" id="new-tag" placeholder="Добавить тег (Enter)">
-                        </div>
-                    </div>
-                    
-                    <div class="buttons">
-                        <button class="btn btn-primary" id="save-note">
-                            💾 Сохранить заметку
-                        </button>
-                        <button class="btn btn-secondary" id="clear-form">
-                            🗑️ Очистить
-                        </button>
-                    </div>
+        <div id="diary" class="tab-content active">
+            <div class="info-block">
+                <h2>✏️ Новая заметка</h2>
+                <div class="form-group">
+                    <label for="note-title">Заголовок</label>
+                    <input type="text" id="note-title" placeholder="О чем эта заметка?">
                 </div>
                 
-                <!-- СПИСОК ЗАМЕТОК -->
-                <div class="notes-list">
-                    <h3>📚 Ваши заметки (<span id="notes-count">0</span>)</h3>
-                    <div id="notes-container">
-                        <!-- Заметки будут здесь -->
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📝</div>
-                            <p>Здесь пока нет заметок</p>
-                            <p style="margin-top: 10px; font-size: 0.9rem;">Создайте первую заметку выше!</p>
-                        </div>
+                <div class="form-group">
+                    <label for="note-text">Текст заметки</label>
+                    <textarea id="note-text" placeholder="Пишите свободно..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Теги (через запятую)</label>
+                    <input type="text" id="note-tags" placeholder="идея, бизнес, технологии">
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn btn-primary" id="save-note">💾 Сохранить заметку</button>
+                    <button class="btn btn-secondary" id="clear-form">🗑️ Очистить</button>
+                </div>
+            </div>
+            
+            <div class="info-block">
+                <h2>📚 Ваши заметки (<span id="notes-count">0</span>)</h2>
+                <div id="notes-container">
+                    <div class="empty-state">
+                        <p>Здесь пока нет заметок</p>
+                        <p>Создайте первую заметку выше!</p>
                     </div>
                 </div>
             </div>
         </div>
         
         <!-- ВКЛАДКА ПОИСК -->
-        <div class="tab-content" id="search">
-            <div class="search-container">
+        <div id="search" class="tab-content">
+            <div class="info-block">
                 <h2>🔍 Умный поиск</h2>
-                <p style="color: #94a3b8; margin-bottom: 25px;">Гибридный поиск по ключевым словам, тегам и смыслу</p>
-                
                 <div class="search-box">
-                    <div class="search-icon">🔍</div>
-                    <input type="text" id="search-input" placeholder="Ищите: #идея, бизнес план, технические решения...">
+                    <input type="text" id="search-input" placeholder="Ищите: #идея, бизнес, технологии...">
                 </div>
-                
-                <div id="search-stats" class="search-stats">
-                    Загружаем поисковый движок...
-                </div>
-                
-                <div id="search-results" class="search-results">
+                <div id="search-results">
                     <div class="empty-state">
-                        <div class="empty-state-icon">🔍</div>
                         <p>Введите запрос для поиска</p>
                     </div>
                 </div>
@@ -594,283 +209,226 @@
         </div>
         
         <!-- ВКЛАДКА АРХИТЕКТУРА -->
-        <div class="tab-content" id="architecture">
-            <div class="architecture-content">
+        <div id="architecture" class="tab-content">
+            <div class="info-block">
                 <h2>🏗️ Архитектура "Куратор & Аналитик"</h2>
-                <p style="color: #94a3b8; margin-bottom: 30px;">Уникальная двухуровневая система для баланса приватности и мощи ИИ</p>
-                
-                <div class="architecture-diagram">
-                    <div class="arch-block">
-                        <div class="arch-icon">🎨</div>
-                        <h3 class="arch-title">КУРАТОР</h3>
-                        <p class="arch-desc">Работает локально на устройстве. Находит нужные записи по смыслу, удаляет личную информацию, получает ваше явное согласие перед отправкой.</p>
-                    </div>
-                    
-                    <div class="arch-block">
-                        <div class="arch-icon">📊</div>
-                        <h3 class="arch-title">АНАЛИТИК</h3>
-                        <p class="arch-desc">Работает в изолированном облаке. Получает только обезличенный контекст, обрабатывает его в zero-trust контейнере, среда уничтожается после работы.</p>
-                    </div>
-                </div>
-                
-                <div style="background: rgba(59, 130, 246, 0.1); padding: 20px; border-radius: 10px; margin-top: 30px;">
-                    <h3 style="color: #60a5fa; margin-bottom: 10px;">🎛️ Контроль в ваших руках</h3>
-                    <p style="color: #cbd5e1;">Вы сами решаете для каждого запроса: 100% локально или осознанный компромисс с облачным ИИ.</p>
+                <p style="color: #cbd5e1; margin: 15px 0; line-height: 1.6;">
+                    <strong>🎨 Куратор</strong> — работает локально на устройстве. Находит нужные записи по смыслу, удаляет личную информацию, получает ваше согласие.
+                </p>
+                <p style="color: #cbd5e1; margin: 15px 0; line-height: 1.6;">
+                    <strong>📊 Аналитик</strong> — работает в изолированном облаке. Получает только обезличенный контекст, обрабатывает в zero-trust контейнере.
+                </p>
+                <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <strong>🎛️ Контроль в ваших руках:</strong> Вы решаете для каждого запроса: 100% локально или осознанный компромисс.
                 </div>
             </div>
         </div>
         
         <!-- ВКЛАДКА БЕЗОПАСНОСТЬ -->
-        <div class="tab-content" id="security">
-            <div class="security-content">
+        <div id="security" class="tab-content">
+            <div class="info-block">
                 <h2>🛡️ Три уровня приватности</h2>
-                <p style="color: #94a3b8; margin-bottom: 30px;">Осознанный выбор между приватностью и мощью ИИ</p>
-                
-                <div class="security-levels">
-                    <div class="level-card level-1">
-                        <div class="level-header">
-                            <div class="level-icon">🔒</div>
-                            <div class="level-name">Уровень 1: "Сейф"</div>
-                        </div>
-                        <p style="color: #cbd5e1; line-height: 1.6;">100% локально на устройстве, без интернета. Быстрые ответы (1-3 сек), базовая ИИ-логика. Ваши данные никогда не покидают устройство.</p>
+                <div style="margin: 20px 0;">
+                    <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <strong>🔒 Уровень 1: "Сейф"</strong><br>
+                        100% локально, без интернета
                     </div>
-                    
-                    <div class="level-card level-2">
-                        <div class="level-header">
-                            <div class="level-icon">🤝</div>
-                            <div class="level-name">Уровень 2: "Советник"</div>
-                        </div>
-                        <p style="color: #cbd5e1; line-height: 1.6;">Осознанный компромисс через архитектуру "Куратор & Аналитик". Вы контролируете, какая информация отправляется в облако.</p>
+                    <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <strong>🤝 Уровень 2: "Советник"</strong><br>
+                        Осознанный компромисс через "Куратор & Аналитик"
                     </div>
-                    
-                    <div class="level-card level-3">
-                        <div class="level-header">
-                            <div class="level-icon">💝</div>
-                            <div class="level-name">Уровень 3: "Наследие"</div>
-                        </div>
-                        <p style="color: #cbd5e1; line-height: 1.6;">Цифровая капсула времени для передачи близким. Зашифрованный архив ваших мыслей и воспоминаний.</p>
+                    <div style="background: rgba(139, 92, 246, 0.1); padding: 15px; border-radius: 10px;">
+                        <strong>💝 Уровень 3: "Наследие"</strong><br>
+                        Цифровая капсула времени
                     </div>
-                </div>
-                
-                <div style="margin-top: 40px; padding: 20px; background: rgba(16, 185, 129, 0.1); border-radius: 10px;">
-                    <h3 style="color: #10b981; margin-bottom: 10px;">✅ Честность как фича</h3>
-                    <p style="color: #cbd5e1;">Мы не скрываем компромисс между приватностью и мощью ИИ. Мы даём вам осознанный контроль и полную прозрачность.</p>
                 </div>
             </div>
         </div>
         
         <!-- ФУТЕР -->
         <footer class="footer">
-            <p>🌌 Aurora Demo | Приватный ИИ-дневник | Работает на GitHub Pages</p>
-            <p style="margin-top: 10px; font-size: 0.8rem;">Архитектура "Куратор & Аналитик" | Честность как фича | Ваши мысли — только ваши</p>
+            <p>🌌 Aurora Demo | Приватный ИИ-дневник</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">Работает на GitHub Pages | Архитектура "Куратор & Аналитик"</p>
         </footer>
     </div>
 
-    <!-- ВСЕ СКРИПТЫ В ОДНОМ ФАЙЛЕ -->
+    <!-- JavaScript -->
     <script>
-        // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====================
-        let notes = [];
-        let currentTags = [];
+        console.log('🚀 Aurora Demo начинает загрузку...');
         
-        // ===================== ОСНОВНАЯ ИНИЦИАЛИЗАЦИЯ =====================
+        // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+        let notes = [];
+        let currentTab = 'diary';
+        
+        // ==================== ДЕМО-ЗАМЕТКИ ====================
+        const demoNotes = [
+            {
+                id: 1,
+                title: "Идея для Aurora",
+                text: "Создать приватный ИИ-дневник с архитектурой 'Куратор & Аналитик'. Баланс между приватностью и мощью ИИ.",
+                tags: ["идея", "стартап"],
+                date: "15 января 2024"
+            },
+            {
+                id: 2,
+                title: "Техническая реализация",
+                text: "Гибридный поиск по ключевым словам, тегам и смыслу. Минималистичный интерфейс.",
+                tags: ["технологии", "разработка"],
+                date: "16 января 2024"
+            },
+            {
+                id: 3,
+                title: "Бизнес-план",
+                text: "Монетизация через подписку ~299 руб/мес. Краудфандинг на Boomstarter.",
+                tags: ["бизнес", "монетизация"],
+                date: "17 января 2024"
+            }
+        ];
+        
+        // ==================== ОСНОВНАЯ ИНИЦИАЛИЗАЦИЯ ====================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Aurora Demo загружается...');
+            console.log('✅ DOM загружен');
             
-            // Инициализация вкладок
             initTabs();
-            
-            // Инициализация дневника
             initDiary();
-            
-            // Инициализация поиска
             initSearch();
-            
-            // Загрузка заметок из localStorage
             loadNotes();
             
             console.log('✅ Aurora Demo готов к работе!');
         });
         
-        // ===================== СИСТЕМА ВКЛАДОК =====================
+        // ==================== СИСТЕМА ВКЛАДОК ====================
         function initTabs() {
+            console.log('Инициализация вкладок...');
             const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
             
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
                     const tabId = this.dataset.tab;
+                    console.log('Переключаем на вкладку:', tabId);
                     
-                    // Убираем активный класс у всех вкладок
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
+                    // Убираем активный класс у всех
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                     
-                    // Добавляем активный класс выбранной вкладке
+                    // Добавляем активный класс выбранной
                     this.classList.add('active');
                     document.getElementById(tabId).classList.add('active');
+                    currentTab = tabId;
                 });
             });
             
             console.log('✅ Вкладки инициализированы');
         }
         
-        // ===================== СИСТЕМА ДНЕВНИКА =====================
+        // ==================== СИСТЕМА ДНЕВНИКА ====================
         function initDiary() {
+            console.log('Инициализация дневника...');
+            
             const saveBtn = document.getElementById('save-note');
             const clearBtn = document.getElementById('clear-form');
-            const newTagInput = document.getElementById('new-tag');
             
-            // Кнопка сохранения заметки
-            saveBtn.addEventListener('click', saveNote);
+            if (saveBtn) {
+                saveBtn.addEventListener('click', saveNote);
+                console.log('✅ Кнопка сохранения подключена');
+            } else {
+                console.error('❌ Кнопка сохранения не найдена!');
+            }
             
-            // Кнопка очистки формы
-            clearBtn.addEventListener('click', clearForm);
-            
-            // Добавление тегов по Enter
-            newTagInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && this.value.trim()) {
-                    addTag(this.value.trim());
-                    this.value = '';
-                    e.preventDefault();
-                }
-            });
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearForm);
+                console.log('✅ Кнопка очистки подключена');
+            }
             
             console.log('✅ Дневник инициализирован');
         }
         
-        function addTag(tagText) {
-            if (!tagText || currentTags.includes(tagText)) return;
-            
-            currentTags.push(tagText);
-            renderTags();
-        }
-        
-        function removeTag(tagText) {
-            currentTags = currentTags.filter(tag => tag !== tagText);
-            renderTags();
-        }
-        
-        function renderTags() {
-            const container = document.getElementById('tags-container');
-            container.innerHTML = '';
-            
-            currentTags.forEach(tag => {
-                const tagElement = document.createElement('span');
-                tagElement.className = 'tag';
-                tagElement.innerHTML = `
-                    ${tag}
-                    <span class="tag-remove" onclick="removeTag('${tag}')">×</span>
-                `;
-                container.appendChild(tagElement);
-            });
-        }
-        
         function saveNote() {
+            console.log('Сохранение заметки...');
+            
             const title = document.getElementById('note-title').value.trim();
             const text = document.getElementById('note-text').value.trim();
+            const tagsInput = document.getElementById('note-tags').value.trim();
             
             if (!title && !text) {
-                alert('Заполните заголовок или текст заметки');
+                alert('Пожалуйста, заполните заголовок или текст заметки');
                 return;
             }
             
+            // Парсим теги
+            const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : [];
+            
             const newNote = {
-                id: Date.now(), // Уникальный ID
+                id: Date.now(),
                 title: title || 'Без названия',
                 text: text,
-                tags: [...currentTags],
-                date: new Date().toLocaleString('ru-RU'),
-                timestamp: Date.now()
+                tags: tags,
+                date: new Date().toLocaleDateString('ru-RU')
             };
             
             notes.unshift(newNote); // Добавляем в начало
-            saveNotesToStorage();
+            saveToLocalStorage();
             renderNotes();
             clearForm();
             
             // Показываем уведомление
-            showNotification('✅ Заметка сохранена!');
-            
+            showMessage('✅ Заметка сохранена!');
             console.log('Заметка сохранена:', newNote);
         }
         
         function clearForm() {
             document.getElementById('note-title').value = '';
             document.getElementById('note-text').value = '';
-            currentTags = [];
-            renderTags();
+            document.getElementById('note-tags').value = '';
+            console.log('Форма очищена');
         }
         
         function loadNotes() {
+            console.log('Загрузка заметок...');
+            
             const saved = localStorage.getItem('aurora-notes');
+            
             if (saved) {
                 try {
                     notes = JSON.parse(saved);
                     console.log(`Загружено ${notes.length} заметок из localStorage`);
                 } catch (e) {
                     console.error('Ошибка загрузки заметок:', e);
-                    notes = [];
+                    notes = [...demoNotes];
+                    saveToLocalStorage();
                 }
             } else {
-                // Добавляем демо-заметки если нет сохраненных
-                notes = getDemoNotes();
-                saveNotesToStorage();
+                notes = [...demoNotes];
+                saveToLocalStorage();
                 console.log('Добавлены демо-заметки');
             }
             
             renderNotes();
-            updateNotesCount();
         }
         
-        function getDemoNotes() {
-            return [
-                {
-                    id: 1,
-                    title: "Идея для Aurora",
-                    text: "Создать приватный ИИ-дневник с архитектурой 'Куратор & Аналитик'. Баланс между приватностью и мощью искусственного интеллекта.",
-                    tags: ["идея", "стартап", "ии"],
-                    date: "15 января 2024, 10:30",
-                    timestamp: 1705311000000
-                },
-                {
-                    id: 2,
-                    title: "Техническая реализация",
-                    text: "Гибридный поиск должен работать по ключевым словам, тегам и смыслу. Пользовательский интерфейс — минималистичный и интуитивный.",
-                    tags: ["технологии", "разработка", "поиск"],
-                    date: "16 января 2024, 14:20",
-                    timestamp: 1705396800000
-                },
-                {
-                    id: 3,
-                    title: "Бизнес-план",
-                    text: "Монетизация через подписку ~299 руб/мес. Краудфандинг на Boomstarter для запуска MVP. Поиск технического сооснователя.",
-                    tags: ["бизнес", "монетизация", "план"],
-                    date: "17 января 2024, 09:15",
-                    timestamp: 1705479300000
-                },
-                {
-                    id: 4,
-                    title: "Личные мысли",
-                    text: "Aurora должна стать не просто приложением, а цифровым наследием. Эмоциональная связь с пользователем через приватность и заботу.",
-                    tags: ["мысли", "видение", "личное"],
-                    date: "18 января 2024, 19:45",
-                    timestamp: 1705599900000
-                }
-            ];
-        }
-        
-        function saveNotesToStorage() {
+        function saveToLocalStorage() {
             localStorage.setItem('aurora-notes', JSON.stringify(notes));
         }
         
         function renderNotes() {
             const container = document.getElementById('notes-container');
+            const countElement = document.getElementById('notes-count');
+            
+            if (!container) {
+                console.error('❌ Контейнер заметок не найден!');
+                return;
+            }
+            
+            // Обновляем счетчик
+            if (countElement) {
+                countElement.textContent = notes.length;
+            }
             
             if (notes.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📝</div>
                         <p>Здесь пока нет заметок</p>
-                        <p style="margin-top: 10px; font-size: 0.9rem;">Создайте первую заметку выше!</p>
+                        <p>Создайте первую заметку выше!</p>
                     </div>
                 `;
                 return;
@@ -887,8 +445,8 @@
                         </div>
                         <div class="note-text">${note.text}</div>
                         ${note.tags && note.tags.length > 0 ? `
-                            <div class="note-tags">
-                                ${note.tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')}
+                            <div>
+                                ${note.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
                             </div>
                         ` : ''}
                     </div>
@@ -896,123 +454,126 @@
             });
             
             container.innerHTML = html;
-            updateNotesCount();
+            console.log(`Отображено ${notes.length} заметок`);
         }
         
-        function updateNotesCount() {
-            document.getElementById('notes-count').textContent = notes.length;
-        }
-        
-        // ===================== СИСТЕМА ПОИСКА =====================
+        // ==================== СИСТЕМА ПОИСКА ====================
         function initSearch() {
-            const searchInput = document.getElementById('search-input');
-            const searchStats = document.getElementById('search-stats');
-            const searchResults = document.getElementById('search-results');
+            console.log('Инициализация поиска...');
             
-            // Простой поисковый движок
-            class SimpleSearch {
-                search(query) {
-                    if (!query || query.trim() === '') return [];
-                    
-                    const queryLower = query.toLowerCase().trim();
-                    const results = [];
-                    
-                    notes.forEach(note => {
-                        let score = 0;
-                        const reasons = [];
-                        
-                        // Поиск по тегам
-                        if (queryLower.startsWith('#')) {
-                            const tag = queryLower.slice(1);
-                            if (note.tags && note.tags.some(t => t.toLowerCase() === tag)) {
-                                score += 100;
-                                reasons.push(`Тег: #${tag}`);
-                            }
-                        }
-                        
-                        // Поиск по заголовку
-                        if (note.title.toLowerCase().includes(queryLower)) {
-                            score += 50;
-                            reasons.push('Заголовок');
-                        }
-                        
-                        // Поиск по тексту
-                        if (note.text.toLowerCase().includes(queryLower)) {
-                            score += 30;
-                            reasons.push('Текст');
-                        }
-                        
-                        // Поиск по тегам (без #)
-                        if (note.tags) {
-                            note.tags.forEach(tag => {
-                                if (tag.toLowerCase().includes(queryLower)) {
-                                    score += 40;
-                                    reasons.push(`Тег: ${tag}`);
-                                }
-                            });
-                        }
-                        
-                        // Поиск по отдельным словам
-                        const words = queryLower.split(' ').filter(w => w.length > 2);
-                        words.forEach(word => {
-                            if (note.title.toLowerCase().includes(word)) score += 20;
-                            if (note.text.toLowerCase().includes(word)) score += 10;
-                        });
-                        
-                        if (score > 0) {
-                            results.push({
-                                note: note,
-                                score: score,
-                                reasons: reasons.slice(0, 2),
-                                relevance: Math.min(Math.round(score / 2), 100)
-                            });
-                        }
-                    });
-                    
-                    // Сортировка по релевантности
-                    return results.sort((a, b) => b.score - a.score);
-                }
+            const searchInput = document.getElementById('search-input');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    performSearch(e.target.value.trim());
+                });
+                console.log('✅ Поиск инициализирован');
+            } else {
+                console.error('❌ Поле поиска не найдено!');
+            }
+        }
+        
+        function performSearch(query) {
+            const resultsContainer = document.getElementById('search-results');
+            
+            if (!resultsContainer) {
+                console.error('❌ Контейнер результатов поиска не найден!');
+                return;
             }
             
-            const searchEngine = new SimpleSearch();
-            
-            // Обработчик поиска
-            searchInput.addEventListener('input', function(e) {
-                const query = e.target.value.trim();
-                
-                // Обновляем статистику
-                searchStats.innerHTML = `
-                    <strong>${notes.length}</strong> заметок проиндексировано |
-                    <strong>${currentTags.length}</strong> тегов |
-                    Гибридный поиск активен
+            if (!query) {
+                resultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <p>Введите запрос для поиска</p>
+                    </div>
                 `;
+                return;
+            }
+            
+            const results = [];
+            const queryLower = query.toLowerCase();
+            
+            // Простой поиск
+            notes.forEach(note => {
+                let score = 0;
                 
-                if (query.length === 0) {
-                    searchResults.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">🔍</div>
-                            <p>Введите запрос для поиска</p>
-                            <p style="margin-top: 10px; font-size: 0.9rem;">Попробуйте: #идея, бизнес, технологии</p>
-                        </div>
-                    `;
-                    return;
+                // Поиск по заголовку
+                if (note.title.toLowerCase().includes(queryLower)) score += 50;
+                
+                // Поиск по тексту
+                if (note.text.toLowerCase().includes(queryLower)) score += 30;
+                
+                // Поиск по тегам
+                if (note.tags) {
+                    note.tags.forEach(tag => {
+                        if (tag.toLowerCase().includes(queryLower)) score += 40;
+                        if (queryLower.startsWith('#') && tag.toLowerCase() === queryLower.slice(1)) score += 100;
+                    });
                 }
                 
-                // Выполняем поиск
-                const results = searchEngine.search(query);
-                
-                if (results.length === 0) {
-                    searchResults.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">🔍</div>
-                            <p>По запросу "<strong>${query}</strong>" ничего не найдено</p>
-                            <p style="margin-top: 10px; font-size: 0.9rem;">Попробуйте другие ключевые слова или поиск по тегам (используйте #)</p>
-                        </div>
-                    `;
-                    return;
+                if (score > 0) {
+                    results.push({
+                        note: note,
+                        score: score
+                    });
                 }
+            });
+            
+            // Сортировка по релевантности
+            results.sort((a, b) => b.score - a.score);
+            
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <p>По запросу "<strong>${query}</strong>" ничего не найдено</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div style="margin-bottom: 20px; color: #94a3b8;">
+                    Найдено: <strong>${results.length}</strong> результатов
+                </div>
+            `;
+            
+            results.forEach(result => {
+                const relevance = Math.min(Math.round(result.score / 2), 100);
+                const color = relevance > 70 ? '#10b981' : relevance > 40 ? '#3b82f6' : '#f59e0b';
                 
-                // Показываем результаты
-                let html = `
-                    <div style="margin-bottom: 25px; color: #94a3b8;">
-                        На
+                html += `
+                    <div class="note-card">
+                        <div class="note-header">
+                            <div class="note-title">${result.note.title}</div>
+                            <div style="color: ${color}; font-weight: bold;">
+                                ${relevance}% релевантности
+                            </div>
+                        </div>
+                        <div class="note-text">${result.note.text}</div>
+                        ${result.note.tags && result.note.tags.length > 0 ? `
+                            <div>
+                                ${result.note.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            resultsContainer.innerHTML = html;
+            console.log(`Найдено ${results.length} результатов для "${query}"`);
+        }
+        
+        // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+        function showMessage(message) {
+            // Простое уведомление
+            alert(message);
+        }
+        
+        // ==================== ГЛОБАЛЬНЫЕ ФУНКЦИИ ====================
+        window.saveNote = saveNote;
+        window.clearForm = clearForm;
+        
+        console.log('✅ Все функции Aurora инициализированы');
+    </script>
+</body>
+</html>
