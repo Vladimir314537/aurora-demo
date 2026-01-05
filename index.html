@@ -771,6 +771,23 @@
             padding: 0 2px;
             border-radius: 3px;
         }
+        
+        /* Показать совпадения */
+        .search-results-info {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(34, 197, 94, 0.1));
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-results-info i {
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
@@ -820,6 +837,10 @@
                     <p>• Разные формы слов: "пойти" = "пойду" = "пошел"</p>
                     <p>• Семантику: "гулять" = "прогулка" = "пройтись"</p>
                     <p>• Контекст: находит по смыслу, а не только по словам</p>
+                </div>
+                <div class="search-results-info" id="results-info" style="display: none;">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Найдено <strong id="found-count">0</strong> заметок по запросу: "<span id="current-query-display"></span>"</span>
                 </div>
             </section>
 
@@ -1062,6 +1083,7 @@
                 this.currentFilter = 'all';
                 this.searchInstance = new SmartSearch();
                 this.currentQuery = '';
+                this.isSearching = false;
                 this.init();
             }
 
@@ -1069,12 +1091,24 @@
                 this.renderNotes();
                 this.setupEventListeners();
                 this.updateAnalytics();
+                this.showWelcomeMessage();
+            }
+
+            showWelcomeMessage() {
+                console.log('🚀 Aurora 4.0 запущена!');
+                console.log('🎯 Попробуйте поиск: "пойду гулять" или "планы перемещения"');
+                console.log('✅ Поиск понимает разные формы слов: пойти = пойду = пошел');
             }
 
             loadNotes() {
                 const saved = localStorage.getItem('aurora-notes');
                 if (saved) {
-                    return JSON.parse(saved);
+                    try {
+                        return JSON.parse(saved);
+                    } catch (e) {
+                        console.error('Ошибка загрузки заметок:', e);
+                        return [...demoNotes];
+                    }
                 }
                 return [...demoNotes];
             }
@@ -1091,28 +1125,45 @@
                 container.innerHTML = '';
                 
                 if (notes.length === 0) {
+                    const message = this.isSearching 
+                        ? 'По вашему запросу ничего не найдено. Попробуйте изменить запрос.'
+                        : 'Заметок пока нет. Создайте первую заметку или воспользуйтесь демо-данными.';
+                    
                     container.innerHTML = `
                         <div class="empty-state" style="grid-column: 1/-1;">
                             <div class="empty-icon">
-                                <i class="fas fa-sticky-note"></i>
+                                <i class="fas fa-${this.isSearching ? 'search' : 'sticky-note'}"></i>
                             </div>
-                            <h3>Заметок пока нет</h3>
-                            <p>Создайте первую заметку или воспользуйтесь демо-данными для тестирования поиска</p>
-                            <button class="btn btn-primary" id="load-demo-btn">
-                                <i class="fas fa-database"></i> Загрузить демо-заметки
-                            </button>
+                            <h3>${this.isSearching ? 'Ничего не найдено' : 'Заметок пока нет'}</h3>
+                            <p>${message}</p>
+                            ${!this.isSearching ? `
+                                <button class="btn btn-primary" id="load-demo-btn">
+                                    <i class="fas fa-database"></i> Загрузить демо-заметки
+                                </button>
+                            ` : ''}
                         </div>
                     `;
                     
                     document.getElementById('load-demo-btn')?.addEventListener('click', () => {
                         this.notes = [...demoNotes];
                         this.saveNotes();
+                        this.isSearching = false;
                         this.renderNotes();
                         this.updateAnalytics();
                     });
                     
                     countElement.textContent = '0 заметок';
                     return;
+                }
+                
+                // Показываем информацию о результатах поиска
+                if (this.isSearching && this.currentQuery) {
+                    const resultsInfo = document.getElementById('results-info');
+                    resultsInfo.style.display = 'flex';
+                    document.getElementById('found-count').textContent = notes.length;
+                    document.getElementById('current-query-display').textContent = this.currentQuery;
+                } else {
+                    document.getElementById('results-info').style.display = 'none';
                 }
                 
                 notes.forEach(note => {
@@ -1132,11 +1183,11 @@
                 let displayText = note.text;
                 let displayTitle = note.title;
                 
-                if (this.currentQuery) {
+                if (this.isSearching && this.currentQuery) {
                     const searchWords = this.currentQuery.toLowerCase().split(' ');
                     searchWords.forEach(word => {
                         if (word.length > 2) {
-                            const regex = new RegExp(`(${word})`, 'gi');
+                            const regex = new RegExp(`(${this.escapeRegExp(word)})`, 'gi');
                             displayText = displayText.replace(regex, '<span class="highlight">$1</span>');
                             displayTitle = displayTitle.replace(regex, '<span class="highlight">$1</span>');
                         }
@@ -1184,6 +1235,10 @@
                 return element;
             }
 
+            escapeRegExp(string) {
+                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            }
+
             addNote(title, text, tags) {
                 const newNote = {
                     id: Date.now(),
@@ -1193,20 +1248,22 @@
                     date: this.formatDate(new Date()),
                     timestamp: Date.now(),
                     hasQuestions: text.includes('?') || title.includes('?'),
-                    isIdea: title.toLowerCase().includes('идея') || text.toLowerCase().includes('идея'),
+                    isIdea: title.toLowerCase().includes('идея') || text.toLowerCase().includes('идея') || text.toLowerCase().includes('можно создать'),
                     important: false,
                     hasMovement: this.checkForMovement(text)
                 };
                 
                 this.notes.unshift(newNote);
                 this.saveNotes();
+                this.isSearching = false;
                 this.renderNotes();
                 this.updateAnalytics();
             }
 
             checkForMovement(text) {
                 const movementWords = ['пойду', 'пойти', 'ходить', 'сходить', 'отправиться', 'двигаться', 'передвигаться', 
-                                      'гулять', 'прогулка', 'работа', 'магазин', 'спортзал', 'парк', 'кафе', 'кино'];
+                                      'гулять', 'прогулка', 'работа', 'магазин', 'спортзал', 'парк', 'кафе', 'кино',
+                                      'ехать', 'поехать', 'пройтись', 'прогуляться', 'съездить'];
                 return movementWords.some(word => text.toLowerCase().includes(word));
             }
 
@@ -1226,7 +1283,7 @@
                     document.getElementById('note-text').value = note.text;
                     
                     const tagsContainer = document.getElementById('tags-container');
-                    tagsContainer.innerHTML = '';
+                    tagsContainer.innerHTML = '<input type="text" id="tag-input" placeholder="Добавьте тег...">';
                     note.tags.forEach(tag => {
                         this.addTagToInput(tag);
                     });
@@ -1242,22 +1299,46 @@
             }
 
             performSearch(query) {
+                console.log('🔍 Начинаем поиск:', query);
+                
                 this.currentQuery = query;
-                const activeFilter = this.currentFilter;
-                const results = this.searchInstance.performSearch(query, this.notes, activeFilter);
+                this.isSearching = !!query.trim();
                 
-                // Обновить аналитику поиска
-                this.updateSearchAnalytics(query, results);
+                // Получаем результаты от умного поиска
+                const searchResults = this.searchInstance.performSearch(query, this.notes);
+                console.log('✅ Результаты поиска:', searchResults.length, 'заметок');
                 
-                // Показать результаты
-                this.renderNotes(results);
+                // Применяем фильтр к результатам поиска
+                const filteredResults = this.applyFilter(searchResults, this.currentFilter);
+                console.log('🎯 После фильтра:', filteredResults.length, 'заметок');
                 
-                return results;
+                // Обновляем аналитику поиска
+                this.updateSearchAnalytics(query, filteredResults);
+                
+                // Показываем результаты
+                this.renderNotes(filteredResults);
+                
+                return filteredResults;
+            }
+
+            applyFilter(notes, filter) {
+                if (filter === 'all') return notes;
+                
+                return notes.filter(note => {
+                    switch (filter) {
+                        case 'ideas': return note.isIdea;
+                        case 'questions': return note.hasQuestions;
+                        case 'movement': return note.hasMovement;
+                        case 'important': return note.important;
+                        default: return true;
+                    }
+                });
             }
 
             updateSearchAnalytics(query, results) {
                 document.getElementById('current-query').textContent = query || '-';
                 document.getElementById('match-count').textContent = results.length;
+                document.getElementById('search-results').textContent = results.length;
                 
                 // Анализ понимания контекста
                 let understanding = 'Базовый';
@@ -1355,9 +1436,6 @@
                     // Очистка формы
                     document.getElementById('note-form').reset();
                     document.getElementById('tags-container').innerHTML = '<input type="text" id="tag-input" placeholder="Добавьте тег...">';
-                    
-                    // Фокус на поле ввода тега
-                    document.getElementById('tag-input').focus();
                 });
                 
                 // Ввод тегов
@@ -1387,20 +1465,21 @@
                 });
                 
                 // Поиск
-                document.getElementById('search-btn').addEventListener('click', () => {
-                    const query = document.getElementById('search-input').value.trim();
+                const searchInput = document.getElementById('search-input');
+                const searchBtn = document.getElementById('search-btn');
+                
+                searchBtn.addEventListener('click', () => {
+                    const query = searchInput.value.trim();
                     if (query) {
                         this.performSearch(query);
                     } else {
-                        this.currentQuery = '';
-                        this.renderNotes();
-                        this.updateSearchAnalytics('', this.notes);
+                        this.clearSearch();
                     }
                 });
                 
-                document.getElementById('search-input').addEventListener('keyup', (e) => {
+                searchInput.addEventListener('keyup', (e) => {
                     if (e.key === 'Enter') {
-                        document.getElementById('search-btn').click();
+                        searchBtn.click();
                     }
                 });
                 
@@ -1411,23 +1490,17 @@
                         btn.classList.add('active');
                         
                         this.currentFilter = btn.dataset.filter;
+                        console.log('🎛️ Фильтр изменен:', this.currentFilter);
                         
                         // Применить фильтр к текущему поиску или ко всем заметкам
-                        if (this.currentQuery) {
+                        if (this.isSearching && this.currentQuery) {
                             this.performSearch(this.currentQuery);
                         } else {
                             let filteredNotes = this.notes;
                             if (this.currentFilter !== 'all') {
-                                filteredNotes = this.notes.filter(note => {
-                                    switch (this.currentFilter) {
-                                        case 'ideas': return note.isIdea;
-                                        case 'questions': return note.hasQuestions;
-                                        case 'movement': return note.hasMovement;
-                                        case 'important': return note.important;
-                                        default: return true;
-                                    }
-                                });
+                                filteredNotes = this.applyFilter(this.notes, this.currentFilter);
                             }
+                            this.isSearching = false;
                             this.renderNotes(filteredNotes);
                         }
                     });
@@ -1435,25 +1508,26 @@
                 
                 // Быстрые действия
                 document.getElementById('action-test-search').addEventListener('click', () => {
-                    document.getElementById('search-input').value = 'пойду гулять';
-                    document.getElementById('search-btn').click();
+                    searchInput.value = 'пойду гулять';
+                    searchBtn.click();
                 });
                 
                 document.getElementById('action-add-sample').addEventListener('click', () => {
                     const sampleNotes = [
-                        "Завтра пойду на работу к 9 утра",
-                        "Вечером схожу в магазин за продуктами",
-                        "В субботу планирую пойти в кино с друзьями"
+                        "Завтра пойду на работу к 9 утра, нужно подготовить презентацию",
+                        "Вечером схожу в магазин за продуктами, нужно купить овощи и мясо",
+                        "В субботу планирую пойти в кино с друзьями, выбрать фильм"
                     ];
                     
                     const randomNote = sampleNotes[Math.floor(Math.random() * sampleNotes.length)];
-                    this.addNote('Демо-заметка о перемещении', randomNote, ['демо', 'перемещение', 'планы']);
+                    this.addNote('Демо-заметка о перемещении', randomNote, ['демо', 'перемещение', 'планы', 'дело']);
                 });
                 
                 document.getElementById('action-clear-all').addEventListener('click', () => {
                     if (confirm('Очистить все заметки? Это действие нельзя отменить.')) {
                         this.notes = [];
                         this.saveNotes();
+                        this.isSearching = false;
                         this.renderNotes();
                         this.updateAnalytics();
                     }
@@ -1466,6 +1540,15 @@
                 document.getElementById('export-btn').addEventListener('click', () => {
                     this.exportData();
                 });
+            }
+
+            clearSearch() {
+                this.currentQuery = '';
+                this.isSearching = false;
+                document.getElementById('results-info').style.display = 'none';
+                this.renderNotes();
+                this.updateSearchAnalytics('', this.notes);
+                document.getElementById('search-input').value = '';
             }
 
             exportData() {
@@ -1481,25 +1564,34 @@
             }
         }
 
-        // КЛАСС УМНОГО ПОИСКА С ОБНОВЛЕННОЙ ЛОГИКОЙ
+        // КЛАСС УМНОГО ПОИСКА
         class SmartSearch {
             constructor() {
                 this.lemmatizer = new Lemmatizer();
                 this.queryAnalyzer = new QueryAnalyzer();
             }
             
-            performSearch(query, notes, activeFilter = 'all') {
+            performSearch(query, notes) {
                 if (!query || query.trim() === '') {
-                    return this.applyFilter(notes, activeFilter);
+                    return notes;
                 }
                 
-                const queryAnalysis = this.queryAnalyzer.analyze(query);
-                const results = this.intelligentSearch(query, notes, queryAnalysis);
+                console.log('🔍 Умный поиск для запроса:', query);
                 
-                return this.applyFilter(results, activeFilter);
+                const queryAnalysis = this.analyzeQuery(query);
+                console.log('📊 Анализ запроса:', queryAnalysis);
+                
+                const results = this.intelligentSearch(query, notes, queryAnalysis);
+                console.log('✅ Найдено результатов:', results.length);
+                
+                return results;
             }
             
-            // ОБНОВЛЕННЫЙ МЕТОД ИНТЕЛЛЕКТУАЛЬНОГО ПОИСКА
+            analyzeQuery(query) {
+                return this.queryAnalyzer.analyze(query);
+            }
+            
+            // УМНЫЙ ПОИСК С РАСШИРЕННОЙ ЛОГИКОЙ
             intelligentSearch(query, notes, queryAnalysis) {
                 const results = [];
                 const queryWords = query.toLowerCase().split(' ').filter(w => w.length > 2);
@@ -1508,18 +1600,19 @@
                     let score = 0;
                     const noteText = (note.title + ' ' + note.text + ' ' + note.tags.join(' ')).toLowerCase();
                     
-                    // 1. Поиск по лемматизированным словам
+                    // 1. Поиск по лемматизированным словам (высший приоритет)
                     queryAnalysis.lemmas.forEach(lemma => {
-                        if (noteText.includes(lemma)) {
-                            score += 10;
+                        if (lemma.length > 2 && noteText.includes(lemma)) {
+                            score += 15;
                         }
                     });
                     
                     // 2. Поиск по формам слов
                     queryAnalysis.forms.forEach(form => {
-                        const regex = new RegExp(`\\b${form}\\b`, 'i');
-                        if (regex.test(note.title) || regex.test(note.text)) {
-                            score += 8;
+                        if (form.length > 2) {
+                            const regex = new RegExp(`\\b${form}\\b`, 'i');
+                            if (regex.test(note.title)) score += 12;
+                            if (regex.test(note.text)) score += 8;
                         }
                     });
                     
@@ -1528,7 +1621,7 @@
                         const patternWords = this.getPatternWords(pattern);
                         patternWords.forEach(word => {
                             if (noteText.includes(word)) {
-                                score += 5;
+                                score += 10;
                             }
                         });
                     });
@@ -1537,7 +1630,7 @@
                     if (queryAnalysis.context.length > 0) {
                         queryAnalysis.context.forEach(context => {
                             if (noteText.includes(context)) {
-                                score += 12;
+                                score += 20;
                             }
                         });
                     }
@@ -1546,8 +1639,8 @@
                     note.tags.forEach(tag => {
                         const tagLower = tag.toLowerCase();
                         queryWords.forEach(word => {
-                            if (tagLower.includes(word) || word.includes(tagLower)) {
-                                score += 15;
+                            if (word.length > 2 && (tagLower.includes(word) || word.includes(tagLower))) {
+                                score += 18;
                             }
                         });
                     });
@@ -1555,47 +1648,47 @@
                     // 6. Поиск по синонимам
                     queryAnalysis.synonyms.forEach(synonym => {
                         if (noteText.includes(synonym)) {
-                            score += 7;
+                            score += 8;
                         }
                     });
                     
                     // 7. Учет типа заметки
-                    if (queryAnalysis.isQuestion && note.hasQuestions) score += 10;
-                    if (queryAnalysis.isIdea && note.isIdea) score += 10;
-                    if (queryAnalysis.hasMovement && note.hasMovement) score += 10;
+                    if (queryAnalysis.isQuestion && note.hasQuestions) score += 15;
+                    if (queryAnalysis.isIdea && note.isIdea) score += 15;
+                    if (queryAnalysis.hasMovement && note.hasMovement) score += 15;
                     
                     // 8. Поиск точных совпадений
                     queryWords.forEach(word => {
                         if (word.length > 3) {
                             const exactRegex = new RegExp(`\\b${word}\\b`, 'i');
-                            if (exactRegex.test(note.title)) score += 20;
+                            if (exactRegex.test(note.title)) score += 25;
                             if (exactRegex.test(note.text)) score += 15;
                         }
                     });
                     
                     // 9. Поиск по корням слов
                     queryAnalysis.stems.forEach(stem => {
-                        const stemRegex = new RegExp(`\\b${stem}\\w*\\b`, 'i');
-                        if (stemRegex.test(noteText)) {
-                            score += 6;
+                        if (stem.length > 2) {
+                            const stemRegex = new RegExp(`\\b${stem}\\w*\\b`, 'i');
+                            if (stemRegex.test(noteText)) {
+                                score += 6;
+                            }
                         }
                     });
                     
                     // 10. Учет времени (если в запросе есть временные указатели)
                     if (queryAnalysis.timeWords.length > 0) {
-                        const timeWords = ['сегодня', 'завтра', 'вчера', 'утром', 'вечером', 'днем', 'неделя', 'месяц'];
-                        timeWords.forEach(timeWord => {
+                        queryAnalysis.timeWords.forEach(timeWord => {
                             if (noteText.includes(timeWord)) {
-                                score += 5;
+                                score += 8;
                             }
                         });
                     }
                     
-                    if (score > 0) {
+                    if (score > 5) { // Минимальный порог для попадания в результаты
                         results.push({
                             note: note,
-                            score: score,
-                            matches: this.extractMatches(note, queryAnalysis)
+                            score: score
                         });
                     }
                 });
@@ -1603,56 +1696,22 @@
                 // Сортировка по релевантности
                 results.sort((a, b) => b.score - a.score);
                 
-                // Возвращаем только заметки
-                return results.map(r => r.note);
+                // Возвращаем только заметки с лучшими результатами
+                return results.slice(0, 50).map(r => r.note);
             }
             
-            extractMatches(note, queryAnalysis) {
-                const matches = [];
-                const noteText = note.title + ' ' + note.text;
-                
-                queryAnalysis.forms.forEach(form => {
-                    if (noteText.toLowerCase().includes(form.toLowerCase())) {
-                        matches.push(form);
-                    }
-                });
-                
-                queryAnalysis.lemmas.forEach(lemma => {
-                    if (noteText.toLowerCase().includes(lemma.toLowerCase())) {
-                        matches.push(lemma);
-                    }
-                });
-                
-                return [...new Set(matches)]; // Уникальные значения
-            }
-            
-            // ОБНОВЛЕННЫЙ МЕТОД ДЛЯ ПОЛУЧЕНИЯ СЛОВ ПО ПАТТЕРНАМ
             getPatternWords(pattern) {
                 const patternMap = {
-                    'гулять с подругой': ['гулять', 'подруга', 'друг', 'встреча', 'общение', 'кафе', 'кофе', 'прогулка'],
-                    'пойти на работу': ['работа', 'офис', 'начальник', 'коллеги', 'задачи', 'проект', 'встреча', 'план'],
+                    'гулять с подругой': ['гулять', 'подруга', 'друг', 'встреча', 'общение', 'кафе', 'кофе', 'прогулка', 'вместе'],
+                    'пойти на работу': ['работа', 'офис', 'служба', 'начальник', 'коллеги', 'задачи', 'проект', 'встреча', 'план', 'дело'],
                     'планы перемещения': ['идти', 'пойти', 'ходить', 'сходить', 'отправиться', 'двигаться', 'передвигаться', 'ехать', 'поехать'],
-                    'конкретное действие': ['магазин', 'кино', 'кафе', 'работа', 'встреча', 'спортзал', 'парк', 'тренировка', 'зал'],
-                    'социальная активность': ['друзья', 'компания', 'встреча', 'общение', 'вечеринка', 'праздник', 'событие'],
-                    'личные дела': ['дом', 'семья', 'отдых', 'уборка', 'готовка', 'чтение', 'хобби'],
-                    'время действия': ['сегодня', 'завтра', 'вечером', 'утром', 'днем', 'сейчас', 'потом', 'после', 'позже']
+                    'конкретное действие': ['магазин', 'кино', 'кафе', 'работа', 'встреча', 'спортзал', 'парк', 'тренировка', 'зал', 'сауна'],
+                    'социальная активность': ['друзья', 'компания', 'встреча', 'общение', 'вечеринка', 'праздник', 'событие', 'вместе'],
+                    'личные дела': ['дом', 'семья', 'отдых', 'уборка', 'готовка', 'чтение', 'хобби', 'книга'],
+                    'время действия': ['сегодня', 'завтра', 'вчера', 'утром', 'вечером', 'днем', 'сейчас', 'потом', 'после', 'позже', 'рано']
                 };
                 
                 return patternMap[pattern] || [];
-            }
-            
-            applyFilter(notes, filter) {
-                if (filter === 'all') return notes;
-                
-                return notes.filter(note => {
-                    switch (filter) {
-                        case 'ideas': return note.isIdea;
-                        case 'questions': return note.hasQuestions;
-                        case 'movement': return note.hasMovement;
-                        case 'important': return note.important;
-                        default: return true;
-                    }
-                });
             }
         }
 
@@ -1670,8 +1729,17 @@
                     patterns: this.identifyPatterns(lowerQuery),
                     context: this.extractContext(lowerQuery),
                     synonyms: this.getSynonyms(lowerQuery),
-                    isQuestion: lowerQuery.includes('?') || lowerQuery.startsWith('как') || lowerQuery.startsWith('что') || lowerQuery.startsWith('где'),
-                    isIdea: lowerQuery.includes('идея') || lowerQuery.includes('можно') || lowerQuery.includes('придумать'),
+                    isQuestion: lowerQuery.includes('?') || 
+                                lowerQuery.startsWith('как') || 
+                                lowerQuery.startsWith('что') || 
+                                lowerQuery.startsWith('где') ||
+                                lowerQuery.startsWith('когда') ||
+                                lowerQuery.startsWith('почему'),
+                    isIdea: lowerQuery.includes('идея') || 
+                           lowerQuery.includes('можно') || 
+                           lowerQuery.includes('придумать') ||
+                           lowerQuery.includes('создать') ||
+                           lowerQuery.includes('открыть'),
                     hasMovement: this.hasMovementWords(lowerQuery),
                     timeWords: this.extractTimeWords(lowerQuery),
                     understoodForms: this.getUnderstoodForms(lowerQuery)
@@ -1688,15 +1756,38 @@
                     if (word.length > 2) {
                         forms.add(word);
                         
-                        // Добавляем возможные формы
+                        // Добавляем возможные формы глаголов
                         if (word.endsWith('ть')) {
-                            forms.add(word.slice(0, -2) + 'у'); // пойти -> пойду
-                            forms.add(word.slice(0, -2) + 'л'); // пойти -> пошел
-                            forms.add(word.slice(0, -2) + 'ла'); // пойти -> пошла
+                            forms.add(word.slice(0, -2) + 'у');    // пойти -> пойду
+                            forms.add(word.slice(0, -2) + 'ешь');  // пойти -> пойдешь
+                            forms.add(word.slice(0, -2) + 'ет');   // пойти -> пойдет
+                            forms.add(word.slice(0, -2) + 'ем');   // пойти -> пойдем
+                            forms.add(word.slice(0, -2) + 'ете');  // пойти -> пойдете
+                            forms.add(word.slice(0, -2) + 'ут');   // пойти -> пойдут
+                            forms.add(word.slice(0, -2) + 'л');    // пойти -> пошел
+                            forms.add(word.slice(0, -2) + 'ла');   // пойти -> пошла
+                            forms.add(word.slice(0, -2) + 'ло');   // пойти -> пошло
+                            forms.add(word.slice(0, -2) + 'ли');   // пойти -> пошли
                         }
                         
                         if (word.endsWith('ать')) {
-                            forms.add(word.slice(0, -3) + 'аю'); // гулять -> гуляю
+                            forms.add(word.slice(0, -3) + 'аю');   // гулять -> гуляю
+                            forms.add(word.slice(0, -3) + 'аешь'); // гулять -> гуляешь
+                            forms.add(word.slice(0, -3) + 'ает');  // гулять -> гуляет
+                            forms.add(word.slice(0, -3) + 'аем');  // гулять -> гуляем
+                            forms.add(word.slice(0, -3) + 'аете'); // гулять -> гуляете
+                            forms.add(word.slice(0, -3) + 'ают');  // гулять -> гуляют
+                        }
+                        
+                        // Добавляем формы для существительных
+                        if (word === 'работа') {
+                            forms.add('работе', 'работу', 'работы', 'работой');
+                        }
+                        if (word === 'подруга') {
+                            forms.add('подругой', 'подруге', 'подругу');
+                        }
+                        if (word === 'магазин') {
+                            forms.add('магазине', 'магазину', 'магазином');
                         }
                     }
                 });
@@ -1712,10 +1803,24 @@
                     if (word.length > 3) {
                         // Удаляем окончания
                         let stem = word;
-                        if (stem.endsWith('ть')) stem = stem.slice(0, -2);
-                        if (stem.endsWith('ать')) stem = stem.slice(0, -3);
-                        if (stem.endsWith('ить')) stem = stem.slice(0, -3);
-                        if (stem.endsWith('еть')) stem = stem.slice(0, -3);
+                        
+                        // Удаляем глагольные окончания
+                        if (stem.endsWith('ться')) stem = stem.slice(0, -4);
+                        else if (stem.endsWith('тся')) stem = stem.slice(0, -3);
+                        else if (stem.endsWith('ать')) stem = stem.slice(0, -3);
+                        else if (stem.endsWith('ять')) stem = stem.slice(0, -3);
+                        else if (stem.endsWith('еть')) stem = stem.slice(0, -3);
+                        else if (stem.endsWith('ить')) stem = stem.slice(0, -3);
+                        else if (stem.endsWith('уть')) stem = stem.slice(0, -3);
+                        else if (stem.endsWith('чь')) stem = stem.slice(0, -2);
+                        
+                        // Удаляем падежные окончания
+                        const endings = ['ом', 'ем', 'ой', 'ей', 'ом', 'ем', 'ах', 'ях', 'ами', 'ями', 'ов', 'ев', 'ин', 'ын'];
+                        endings.forEach(ending => {
+                            if (stem.endsWith(ending) && stem.length > ending.length + 2) {
+                                stem = stem.slice(0, -ending.length);
+                            }
+                        });
                         
                         if (stem.length > 2) {
                             stems.add(stem);
@@ -1730,13 +1835,13 @@
                 const patterns = [];
                 
                 const patternMatches = {
-                    'гулять с подругой': ['гулять с подругой', 'встретиться с подругой', 'погулять с другом'],
-                    'пойти на работу': ['пойти на работу', 'иду на работу', 'ехать на работу'],
-                    'планы перемещения': ['пойду', 'пойти', 'сходить', 'отправиться', 'ехать', 'двигаться'],
-                    'конкретное действие': ['в магазин', 'в кино', 'в кафе', 'на работу', 'на встречу'],
-                    'социальная активность': ['с друзьями', 'в компании', 'на вечеринке', 'на празднике'],
-                    'личные дела': ['дома', 'отдыхать', 'читать', 'смотреть', 'готовить'],
-                    'время действия': ['сегодня', 'завтра', 'вечером', 'утром', 'днем']
+                    'гулять с подругой': ['гулять с подругой', 'встретиться с подругой', 'погулять с другом', 'с подругой гулять'],
+                    'пойти на работу': ['пойти на работу', 'иду на работу', 'ехать на работу', 'на работу пойти', 'работать идти'],
+                    'планы перемещения': ['пойду', 'пойти', 'сходить', 'отправиться', 'ехать', 'двигаться', 'передвигаться', 'прогуляться'],
+                    'конкретное действие': ['в магазин', 'в кино', 'в кафе', 'на работу', 'на встречу', 'в спортзал', 'в парк', 'в сауну'],
+                    'социальная активность': ['с друзьями', 'в компании', 'на вечеринке', 'на празднике', 'с подругой', 'с коллегами'],
+                    'личные дела': ['дома', 'отдыхать', 'читать', 'смотреть', 'готовить', 'убирать', 'спать', 'отдых'],
+                    'время действия': ['сегодня', 'завтра', 'вчера', 'утром', 'вечером', 'днем', 'ночью', 'сейчас', 'после работы']
                 };
                 
                 for (const [pattern, keywords] of Object.entries(patternMatches)) {
@@ -1755,7 +1860,8 @@
                 const contexts = [];
                 const phrases = [
                     'гулять с подругой', 'пойти на работу', 'сходить в магазин',
-                    'пойти в кино', 'встретиться с друзьями', 'поехать на природу'
+                    'пойти в кино', 'встретиться с друзьями', 'поехать на природу',
+                    'пойти в спортзал', 'сходить в кафе', 'пойти в парк'
                 ];
                 
                 phrases.forEach(phrase => {
@@ -1769,11 +1875,13 @@
             
             getSynonyms(text) {
                 const synonymMap = {
-                    'гулять': ['прогуливаться', 'ходить', 'пройтись', 'прогуляться'],
-                    'пойти': ['отправиться', 'поехать', 'двинуться', 'направиться'],
-                    'работа': ['офис', 'служба', 'дело', 'занятие'],
-                    'магазин': ['супермаркет', 'лавка', 'торговый центр', 'бутик'],
-                    'друг': ['приятель', 'товарищ', 'знакомый', 'компаньон']
+                    'гулять': ['прогуливаться', 'ходить', 'пройтись', 'прогуляться', 'проминаться'],
+                    'пойти': ['отправиться', 'поехать', 'двинуться', 'направиться', 'выдвинуться'],
+                    'работа': ['офис', 'служба', 'дело', 'занятие', 'профессия'],
+                    'магазин': ['супермаркет', 'лавка', 'торговый центр', 'бутик', 'маркет'],
+                    'друг': ['приятель', 'товарищ', 'знакомый', 'компаньон', 'дружок'],
+                    'подруга': ['подружка', 'приятельница', 'знакомая', 'дружище'],
+                    'кафе': ['кофейня', 'ресторан', 'бар', 'бистро', 'закусочная']
                 };
                 
                 const synonyms = new Set();
@@ -1790,13 +1898,15 @@
             
             hasMovementWords(text) {
                 const movementWords = ['пойду', 'пойти', 'ходить', 'сходить', 'отправиться', 'двигаться', 
-                                      'передвигаться', 'ехать', 'поехать', 'гулять', 'прогуляться'];
+                                      'передвигаться', 'ехать', 'поехать', 'гулять', 'прогуляться',
+                                      'идти', 'съездить', 'пройтись', 'прогуливаться', 'направиться'];
                 return movementWords.some(word => text.includes(word));
             }
             
             extractTimeWords(text) {
                 const timeWords = ['сегодня', 'завтра', 'вчера', 'утром', 'вечером', 'днем', 
-                                 'ночью', 'сейчас', 'потом', 'позже', 'скоро', 'недавно'];
+                                 'ночью', 'сейчас', 'потом', 'позже', 'скоро', 'недавно',
+                                 'после', 'до', 'рано', 'поздно', 'сразу', 'вскоре'];
                 return timeWords.filter(word => text.includes(word));
             }
             
@@ -1805,14 +1915,20 @@
                 const words = text.split(' ');
                 
                 words.forEach(word => {
-                    if (word.includes('пойти') || word.includes('пойду') || word.includes('пошел')) {
+                    if (word.includes('пойти') || word.includes('пойду') || word.includes('пошел') || 
+                        word.includes('пойдешь') || word.includes('пойдет')) {
                         forms.push('Пойти/Пойду/Пошел');
                     }
-                    if (word.includes('гулять') || word.includes('гуляю') || word.includes('гулял')) {
+                    if (word.includes('гулять') || word.includes('гуляю') || word.includes('гулял') ||
+                        word.includes('гуляешь') || word.includes('гуляет')) {
                         forms.push('Гулять/Гуляю/Гулял');
                     }
-                    if (word.includes('работа') || word.includes('работе') || word.includes('работу')) {
+                    if (word.includes('работа') || word.includes('работе') || word.includes('работу') ||
+                        word.includes('работы') || word.includes('работой')) {
                         forms.push('Работа/Работе/Работу');
+                    }
+                    if (word.includes('магазин') || word.includes('магазине') || word.includes('магазину')) {
+                        forms.push('Магазин/Магазине/Магазину');
                     }
                 });
                 
@@ -1839,63 +1955,127 @@
             }
             
             getLemma(word) {
-                // Базовая лемматизация для русского языка
-                const endings = [
-                    {pattern: /(?:ется|ется)$/, replace: 'ться'},
-                    {pattern: /(?:ется|ются)$/, replace: 'ться'},
-                    {pattern: /(?:ться|тся)$/, replace: 'ть'},
-                    {pattern: /(?:ать|ять|еть|ить)$/, replace: 'ть'},
-                    {pattern: /(?:ую|юю|аю|яю)$/, replace: 'ть'},
-                    {pattern: /(?:ал|ял|ил|ел)$/, replace: 'ть'},
-                    {pattern: /(?:ала|яла|ила|ела)$/, replace: 'ть'},
-                    {pattern: /(?:ало|яло|ило|ело)$/, replace: 'ть'},
-                    {pattern: /(?:али|яли|или|ели)$/, replace: 'ть'},
-                    {pattern: /(?:у|ю|ешь|ёшь|ет|ёт|ем|ём|ете|ёте|ут|ют|ат|ят)$/, replace: 'ть'},
-                    {pattern: /(?:ый|ий|ой|ая|яя|ое|ее|ые|ие)$/, replace: ''},
-                    {pattern: /(?:ов|ев|ин|ын)$/, replace: ''}
-                ];
-                
-                let lemma = word;
-                
                 // Особые случаи
                 const specialCases = {
                     'пойду': 'пойти',
+                    'пойдешь': 'пойти',
+                    'пойдет': 'пойти',
+                    'пойдем': 'пойти',
+                    'пойдете': 'пойти',
+                    'пойдут': 'пойти',
                     'пошел': 'пойти',
                     'пошла': 'пойти',
+                    'пошло': 'пойти',
                     'пошли': 'пойти',
+                    
                     'гуляю': 'гулять',
+                    'гуляешь': 'гулять',
+                    'гуляет': 'гулять',
+                    'гуляем': 'гулять',
+                    'гуляете': 'гулять',
+                    'гуляют': 'гулять',
                     'гулял': 'гулять',
                     'гуляла': 'гулять',
+                    'гуляло': 'гулять',
                     'гуляли': 'гулять',
+                    
                     'работаю': 'работать',
+                    'работаешь': 'работать',
+                    'работает': 'работать',
+                    'работаем': 'работать',
+                    'работаете': 'работать',
+                    'работают': 'работать',
                     'работал': 'работать',
-                    'работала': 'работать'
+                    'работала': 'работать',
+                    'работало': 'работать',
+                    'работали': 'работать',
+                    
+                    'иду': 'идти',
+                    'идешь': 'идти',
+                    'идет': 'идти',
+                    'идем': 'идти',
+                    'идете': 'идти',
+                    'идут': 'идти',
+                    'шел': 'идти',
+                    'шла': 'идти',
+                    'шло': 'идти',
+                    'шли': 'идти',
+                    
+                    'еду': 'ехать',
+                    'едешь': 'ехать',
+                    'едет': 'ехать',
+                    'едем': 'ехать',
+                    'едете': 'ехать',
+                    'едут': 'ехать',
+                    'ехал': 'ехать',
+                    'ехала': 'ехать',
+                    'ехало': 'ехать',
+                    'ехали': 'ехать'
                 };
                 
                 if (specialCases[word]) {
                     return specialCases[word];
                 }
                 
+                // Общие правила
+                const rules = [
+                    // Глаголы
+                    {pattern: /(?:ться|тся)$/, replace: 'ть'},
+                    {pattern: /(?:аю|яю|ую|юю)$/, replace: 'ать'},
+                    {pattern: /(?:ал|ял|ил|ел|ул|ол)$/, replace: 'ать'},
+                    {pattern: /(?:ала|яла|ила|ела|ула|ола)$/, replace: 'ать'},
+                    {pattern: /(?:ало|яло|ило|ело|уло|оло)$/, replace: 'ать'},
+                    {pattern: /(?:али|яли|или|ели|ули|оли)$/, replace: 'ать'},
+                    
+                    // Существительные
+                    {pattern: /(?:ом|ем|ой|ей)$/, replace: ''},
+                    {pattern: /(?:ам|ям|ом|ем|ах|ях)$/, replace: ''},
+                    {pattern: /(?:ами|ями)$/, replace: ''},
+                    {pattern: /(?:у|ю|е|и)$/, replace: ''},
+                    {pattern: /(?:а|я|о|е|ы|и)$/, replace: ''},
+                    
+                    // Прилагательные
+                    {pattern: /(?:ый|ий|ой|ая|яя|ое|ее|ые|ие)$/, replace: ''},
+                    
+                    // Причастия
+                    {pattern: /(?:щий|щая|щее|щие)$/, replace: 'ть'},
+                    {pattern: /(?:вший|вшая|вшее|вшие)$/, replace: 'ть'},
+                    
+                    // Деепричастия
+                    {pattern: /(?:я|в|вши|ши)$/, replace: 'ть'}
+                ];
+                
+                let lemma = word;
+                
                 // Применяем правила
-                for (const ending of endings) {
-                    if (ending.pattern.test(lemma)) {
-                        lemma = lemma.replace(ending.pattern, ending.replace);
+                for (const rule of rules) {
+                    if (rule.pattern.test(lemma) && lemma.length > rule.replace.length + 2) {
+                        lemma = lemma.replace(rule.pattern, rule.replace);
                         break;
                     }
                 }
                 
-                return lemma;
+                return lemma.length > 2 ? lemma : word;
             }
         }
 
         // ЗАПУСК ПРИЛОЖЕНИЯ
         document.addEventListener('DOMContentLoaded', () => {
-            window.auroraApp = new AuroraApp();
-            
-            // Авто-тест поиска при загрузке
-            setTimeout(() => {
-                console.log('Aurora 4.0 запущена! Попробуйте поиск: "пойду гулять" или "планы перемещения"');
-            }, 1000);
+            try {
+                window.auroraApp = new AuroraApp();
+                
+                // Авто-тест при загрузке (опционально)
+                setTimeout(() => {
+                    if (window.location.hash === '#test') {
+                        document.getElementById('search-input').value = 'пойду гулять';
+                        document.getElementById('search-btn').click();
+                    }
+                }, 500);
+                
+            } catch (error) {
+                console.error('Ошибка запуска Aurora:', error);
+                alert('Ошибка при запуске приложения. Проверьте консоль для деталей.');
+            }
         });
     </script>
 </body>
