@@ -81,6 +81,18 @@
             color: var(--text-secondary);
         }
 
+        /* Анимация воспроизведения */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .playing {
+            animation: pulse 1.5s infinite;
+            background: rgba(6, 182, 212, 0.3) !important;
+        }
+
         /* Шапка */
         .header {
             grid-column: 1 / -1;
@@ -819,17 +831,6 @@
         .search-results-info i {
             color: var(--accent);
         }
-
-        /* Простая анимация звука */
-        .sound-pulse {
-            animation: soundPulse 2s infinite;
-        }
-
-        @keyframes soundPulse {
-            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
-        }
     </style>
 </head>
 <body>
@@ -852,7 +853,7 @@
                 <button class="btn btn-secondary" id="export-btn">
                     <i class="fas fa-download"></i> Экспорт
                 </button>
-                <button class="btn btn-primary" id="play-welcome-btn" style="margin-left: 10px;">
+                <button class="btn btn-primary" id="play-welcome-btn">
                     <i class="fas fa-volume-up"></i> Приветствие
                 </button>
             </div>
@@ -1026,14 +1027,17 @@
 
     <script>
         // ============================================
-        // ПРОСТАЯ СИСТЕМА ЗВУКА И ГОЛОСА - ИСПРАВЛЕННАЯ
+        // УЛУЧШЕННАЯ СИСТЕМА ЗВУКА И ГОЛОСА - РОБАСТНАЯ
         // ============================================
         
-        class SimpleSoundSystem {
+        class RobustSoundSystem {
             constructor() {
                 this.isSoundEnabled = true;
-                this.hasPlayedWelcome = false;
+                this.isSpeaking = false;
                 this.soundToggle = document.getElementById('soundToggle');
+                this.welcomeBtn = document.getElementById('play-welcome-btn');
+                this.testVoiceBtn = document.getElementById('action-test-voice');
+                
                 this.init();
             }
             
@@ -1048,115 +1052,160 @@
                 this.soundToggle.addEventListener('click', () => this.toggleSound());
                 
                 // Кнопка приветствия
-                document.getElementById('play-welcome-btn').addEventListener('click', () => {
+                this.welcomeBtn.addEventListener('click', () => {
                     this.playWelcomeVoice();
                 });
                 
                 // Быстрое действие теста голоса
-                document.getElementById('action-test-voice').addEventListener('click', () => {
+                this.testVoiceBtn.addEventListener('click', () => {
                     this.playWelcomeVoice();
                 });
                 
-                // Запуск приветствия при первом действии пользователя
-                this.setupUserInteraction();
+                // Проверяем поддержку
+                this.checkSupport();
             }
             
-            setupUserInteraction() {
-                // Запускаем приветствие при первом клике пользователя
-                const playOnFirstClick = () => {
-                    if (!this.hasPlayedWelcome && this.isSoundEnabled) {
-                        setTimeout(() => {
-                            this.playWelcomeVoice();
-                        }, 500);
-                    }
-                    // Убираем обработчик после первого клика
-                    document.removeEventListener('click', playOnFirstClick);
-                    document.removeEventListener('keydown', playOnFirstClick);
-                };
+            checkSupport() {
+                const hasSpeech = 'speechSynthesis' in window;
+                const hasAudio = 'AudioContext' in window || 'webkitAudioContext' in window;
                 
-                document.addEventListener('click', playOnFirstClick);
-                document.addEventListener('keydown', playOnFirstClick);
+                console.log('🔊 Проверка поддержки звука:');
+                console.log('✅ SpeechSynthesis:', hasSpeech);
+                console.log('✅ Web Audio API:', hasAudio);
                 
-                // Авто-запуск через 3 секунды если пользователь бездействует
-                setTimeout(() => {
-                    if (!this.hasPlayedWelcome && this.isSoundEnabled) {
-                        this.playWelcomeVoice();
-                    }
-                }, 3000);
+                if (!hasSpeech) {
+                    console.warn('❌ SpeechSynthesis не поддерживается в этом браузере');
+                    this.welcomeBtn.disabled = true;
+                    this.welcomeBtn.title = 'Голос не поддерживается в этом браузере';
+                    this.testVoiceBtn.disabled = true;
+                }
+                
+                if (!hasAudio) {
+                    console.warn('❌ Web Audio API не поддерживается');
+                    this.soundToggle.style.display = 'none';
+                    this.isSoundEnabled = false;
+                }
             }
             
             playWelcomeVoice() {
-                if (!this.isSoundEnabled) return;
+                if (!this.isSoundEnabled) {
+                    alert('Звук выключен. Включите звук для приветствия.');
+                    return;
+                }
                 
-                if ('speechSynthesis' in window) {
-                    // Останавливаем любую текущую речь
+                if (!('speechSynthesis' in window)) {
+                    alert('Голосовое приветствие не поддерживается в вашем браузере.');
+                    return;
+                }
+                
+                if (this.isSpeaking) {
                     speechSynthesis.cancel();
+                    this.isSpeaking = false;
+                    this.welcomeBtn.classList.remove('playing');
+                    return;
+                }
+                
+                // Останавливаем любую текущую речь
+                speechSynthesis.cancel();
+                
+                // Анимация кнопки
+                this.welcomeBtn.classList.add('playing');
+                this.isSpeaking = true;
+                
+                // Функция для произнесения с правильным голосом
+                const speakMessage = () => {
+                    const voices = speechSynthesis.getVoices();
                     
-                    // Ждем загрузки голосов
-                    const speakWithVoice = () => {
-                        const voices = speechSynthesis.getVoices();
-                        
-                        // Ищем русский голос
-                        let voice = voices.find(v => v.lang === 'ru-RU');
-                        if (!voice) {
-                            voice = voices.find(v => v.lang.includes('ru'));
-                        }
-                        if (!voice) {
-                            voice = voices.find(v => v.lang.includes('RU'));
-                        }
-                        if (!voice) {
-                            voice = voices[0]; // Берем первый доступный
-                        }
-                        
-                        const welcomeMessage = new SpeechSynthesisUtterance(
-                            "Добро пожаловать в Aurora. Пространство уюта и безопасности. Ваши мысли — только ваши."
-                        );
-                        
-                        welcomeMessage.lang = 'ru-RU';
-                        welcomeMessage.rate = 0.9;
-                        welcomeMessage.pitch = 1.0;
-                        welcomeMessage.volume = 1.0;
-                        
-                        if (voice) {
-                            welcomeMessage.voice = voice;
-                        }
-                        
-                        // Устанавливаем обработчики
-                        welcomeMessage.onstart = () => {
-                            console.log('🎵 Голосовое приветствие началось');
-                            this.soundToggle.classList.add('sound-pulse');
-                        };
-                        
-                        welcomeMessage.onend = () => {
-                            console.log('✅ Голосовое приветствие завершено');
-                            this.soundToggle.classList.remove('sound-pulse');
-                            this.hasPlayedWelcome = true;
-                        };
-                        
-                        welcomeMessage.onerror = (event) => {
-                            console.log('❌ Ошибка голоса:', event.error);
-                            this.soundToggle.classList.remove('sound-pulse');
-                        };
-                        
-                        // Произносим
-                        speechSynthesis.speak(welcomeMessage);
-                    };
+                    // Находим лучший голос для русского
+                    let voice = null;
                     
-                    // Если голоса уже загружены
-                    if (speechSynthesis.getVoices().length > 0) {
-                        speakWithVoice();
-                    } else {
-                        // Ждем загрузки голосов
-                        speechSynthesis.onvoiceschanged = speakWithVoice;
+                    // Приоритет 1: русский голос
+                    voice = voices.find(v => v.lang === 'ru-RU');
+                    
+                    // Приоритет 2: любой голос с ru
+                    if (!voice) {
+                        voice = voices.find(v => v.lang.includes('ru'));
                     }
                     
-                    // Пульсация кнопки звука
-                    this.soundToggle.classList.add('sound-pulse');
+                    // Приоритет 3: любой голос с RU
+                    if (!voice) {
+                        voice = voices.find(v => v.lang.includes('RU'));
+                    }
                     
+                    // Приоритет 4: первый женский голос
+                    if (!voice) {
+                        voice = voices.find(v => v.name.toLowerCase().includes('female'));
+                    }
+                    
+                    // Приоритет 5: первый доступный голос
+                    if (!voice && voices.length > 0) {
+                        voice = voices[0];
+                    }
+                    
+                    const welcomeMessage = new SpeechSynthesisUtterance(
+                        "Добро пожаловать в Aurora. Пространство уюта и безопасности. Ваши мысли — только ваши."
+                    );
+                    
+                    welcomeMessage.lang = 'ru-RU';
+                    welcomeMessage.rate = 0.9; // Естественная скорость
+                    welcomeMessage.pitch = 1.0;
+                    welcomeMessage.volume = 1.0;
+                    
+                    if (voice) {
+                        welcomeMessage.voice = voice;
+                        console.log('🎤 Используется голос:', voice.name, voice.lang);
+                    } else {
+                        console.log('⚠️ Русский голос не найден, используется системный');
+                    }
+                    
+                    // Обработчики событий
+                    welcomeMessage.onstart = () => {
+                        console.log('🎵 Голосовое приветствие началось');
+                        this.soundToggle.classList.add('playing');
+                    };
+                    
+                    welcomeMessage.onend = () => {
+                        console.log('✅ Голосовое приветствие завершено');
+                        this.welcomeBtn.classList.remove('playing');
+                        this.soundToggle.classList.remove('playing');
+                        this.isSpeaking = false;
+                    };
+                    
+                    welcomeMessage.onerror = (event) => {
+                        console.log('❌ Ошибка голоса:', event.error);
+                        this.welcomeBtn.classList.remove('playing');
+                        this.soundToggle.classList.remove('playing');
+                        this.isSpeaking = false;
+                        
+                        // В случае ошибки - звуковой сигнал
+                        this.playSound('success');
+                    };
+                    
+                    // Задержка перед воспроизведением для стабильности
+                    setTimeout(() => {
+                        speechSynthesis.speak(welcomeMessage);
+                    }, 100);
+                };
+                
+                // Если голоса уже загружены
+                if (speechSynthesis.getVoices().length > 0) {
+                    speakMessage();
                 } else {
-                    console.log('❌ SpeechSynthesis не поддерживается в этом браузере');
-                    // Вместо голоса играем звук
-                    this.playSound('success');
+                    // Ждем загрузки голосов с таймаутом
+                    let voicesLoaded = false;
+                    
+                    const voiceTimeout = setTimeout(() => {
+                        if (!voicesLoaded) {
+                            console.log('⏰ Таймаут загрузки голосов, пробуем без выбора голоса');
+                            speakMessage();
+                        }
+                    }, 2000);
+                    
+                    speechSynthesis.onvoiceschanged = () => {
+                        clearTimeout(voiceTimeout);
+                        voicesLoaded = true;
+                        speakMessage();
+                    };
                 }
             }
             
@@ -1164,48 +1213,102 @@
                 if (!this.isSoundEnabled) return;
                 
                 try {
-                    // Создаем простой звук через Web Audio API
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    const audioContext = new AudioContext();
+                    
+                    // Создаем осциллятор
                     const oscillator = audioContext.createOscillator();
                     const gainNode = audioContext.createGain();
                     
                     oscillator.connect(gainNode);
                     gainNode.connect(audioContext.destination);
                     
-                    // Настройки звука в зависимости от типа
-                    let frequency = 800;
-                    let duration = 0.1;
+                    // Настройки звука
+                    const soundConfig = {
+                        'search': { freq: 800, duration: 0.15, type: 'sine' },
+                        'success': { freq: 1000, duration: 0.2, type: 'sine' },
+                        'note': { freq: 1200, duration: 0.15, type: 'triangle' },
+                        'delete': { freq: 400, duration: 0.1, type: 'sawtooth' }
+                    };
                     
-                    switch(type) {
-                        case 'search':
-                            frequency = 600;
-                            duration = 0.15;
-                            break;
-                        case 'success':
-                            frequency = 1000;
-                            duration = 0.2;
-                            break;
-                        case 'note':
-                            frequency = 1200;
-                            duration = 0.15;
-                            break;
-                        case 'delete':
-                            frequency = 400;
-                            duration = 0.1;
-                            break;
-                    }
+                    const config = soundConfig[type] || soundConfig.success;
                     
-                    oscillator.frequency.value = frequency;
-                    oscillator.type = 'sine';
+                    oscillator.frequency.value = config.freq;
+                    oscillator.type = config.type;
                     
-                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                    // Плавное нарастание и затухание
+                    const now = audioContext.currentTime;
+                    gainNode.gain.setValueAtTime(0, now);
+                    gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, now + config.duration);
                     
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + duration);
+                    oscillator.start(now);
+                    oscillator.stop(now + config.duration);
+                    
+                    // Закрываем контекст после завершения
+                    setTimeout(() => {
+                        if (audioContext.state !== 'closed') {
+                            audioContext.close();
+                        }
+                    }, config.duration * 1000 + 100);
                     
                 } catch (error) {
                     console.debug('Sound error:', error);
+                    // Fallback: простой beep через HTML5 Audio
+                    this.playFallbackSound(type);
+                }
+            }
+            
+            playFallbackSound(type) {
+                try {
+                    const audio = new Audio();
+                    
+                    // Создаем простой звук через Data URL
+                    const sampleRate = 44100;
+                    const duration = 0.2;
+                    const freq = type === 'success' ? 1000 : 800;
+                    
+                    // Генерируем синусоидальную волну
+                    const samples = Math.floor(sampleRate * duration);
+                    const buffer = new ArrayBuffer(44 + samples * 2);
+                    const view = new DataView(buffer);
+                    
+                    // Заголовок WAV
+                    this.writeString(view, 0, 'RIFF');
+                    view.setUint32(4, 36 + samples * 2, true);
+                    this.writeString(view, 8, 'WAVE');
+                    this.writeString(view, 12, 'fmt ');
+                    view.setUint32(16, 16, true);
+                    view.setUint16(20, 1, true);
+                    view.setUint16(22, 1, true);
+                    view.setUint32(24, sampleRate, true);
+                    view.setUint32(28, sampleRate * 2, true);
+                    view.setUint16(32, 2, true);
+                    view.setUint16(34, 16, true);
+                    this.writeString(view, 36, 'data');
+                    view.setUint32(40, samples * 2, true);
+                    
+                    // Данные
+                    for (let i = 0; i < samples; i++) {
+                        const t = i / sampleRate;
+                        const value = Math.sin(2 * Math.PI * freq * t) * 0.3;
+                        const sample = Math.max(-1, Math.min(1, value));
+                        const intSample = sample < 0 ? sample * 32768 : sample * 32767;
+                        view.setInt16(44 + i * 2, intSample, true);
+                    }
+                    
+                    const blob = new Blob([buffer], { type: 'audio/wav' });
+                    audio.src = URL.createObjectURL(blob);
+                    audio.play();
+                    
+                } catch (error) {
+                    console.debug('Fallback sound error:', error);
+                }
+            }
+            
+            writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
                 }
             }
             
@@ -1218,10 +1321,10 @@
                 if (this.isSoundEnabled) {
                     this.playSound('success');
                     
-                    // Пульсация кнопки
-                    this.soundToggle.classList.add('sound-pulse');
+                    // Анимация кнопки
+                    this.soundToggle.classList.add('playing');
                     setTimeout(() => {
-                        this.soundToggle.classList.remove('sound-pulse');
+                        this.soundToggle.classList.remove('playing');
                     }, 1000);
                 }
             }
@@ -1240,7 +1343,7 @@
         }
 
         // Глобальная звуковая система
-        window.soundSystem = new SimpleSoundSystem();
+        window.soundSystem = new RobustSoundSystem();
 
         // ============================================
         // ОРИГИНАЛЬНЫЙ КОД AURORA 4.0 С ДОБАВЛЕНИЕМ ЗВУКОВ
@@ -1362,28 +1465,22 @@
                 this.updateAnalytics();
                 this.showWelcomeMessage();
                 
-                // Авто-демо при первом посещении
+                // Авто-демо поиска при первом посещении
                 const firstVisit = !localStorage.getItem('aurora-first-visit');
                 if (firstVisit) {
                     localStorage.setItem('aurora-first-visit', 'true');
                     setTimeout(() => {
                         this.demoSearch('пойду гулять');
-                    }, 2000);
+                    }, 1000);
                 }
             }
 
             showWelcomeMessage() {
                 console.log('🚀 Aurora 4.1 запущена!');
-                console.log('🎵 Голосовое приветствие активировано');
-                console.log('🔊 Простая звуковая система готова');
-                console.log('🎯 Попробуйте поиск: "пойду гулять"');
-                
-                // Вместо автоматического приветствия - показываем кнопку
-                setTimeout(() => {
-                    if (!window.soundSystem.hasPlayedWelcome) {
-                        console.log('💡 Нажмите кнопку "Приветствие" или используйте систему');
-                    }
-                }, 1000);
+                console.log('🎵 Голосовое приветствие готово');
+                console.log('🔊 Робастная звуковая система');
+                console.log('🎯 Нажмите кнопку "Приветствие" для голоса');
+                console.log('🔍 Попробуйте поиск: "пойду гулять"');
             }
 
             loadNotes() {
