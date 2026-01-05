@@ -852,6 +852,9 @@
                 <button class="btn btn-secondary" id="export-btn">
                     <i class="fas fa-download"></i> Экспорт
                 </button>
+                <button class="btn btn-primary" id="play-welcome-btn" style="margin-left: 10px;">
+                    <i class="fas fa-volume-up"></i> Приветствие
+                </button>
             </div>
         </header>
 
@@ -1023,7 +1026,7 @@
 
     <script>
         // ============================================
-        // ПРОСТАЯ СИСТЕМА ЗВУКА И ГОЛОСА
+        // ПРОСТАЯ СИСТЕМА ЗВУКА И ГОЛОСА - ИСПРАВЛЕННАЯ
         // ============================================
         
         class SimpleSoundSystem {
@@ -1044,22 +1047,69 @@
                 this.updateSoundToggle();
                 this.soundToggle.addEventListener('click', () => this.toggleSound());
                 
-                // Авто-приветствие
-                setTimeout(() => this.playWelcomeVoice(), 1500);
+                // Кнопка приветствия
+                document.getElementById('play-welcome-btn').addEventListener('click', () => {
+                    this.playWelcomeVoice();
+                });
+                
+                // Быстрое действие теста голоса
+                document.getElementById('action-test-voice').addEventListener('click', () => {
+                    this.playWelcomeVoice();
+                });
+                
+                // Запуск приветствия при первом действии пользователя
+                this.setupUserInteraction();
+            }
+            
+            setupUserInteraction() {
+                // Запускаем приветствие при первом клике пользователя
+                const playOnFirstClick = () => {
+                    if (!this.hasPlayedWelcome && this.isSoundEnabled) {
+                        setTimeout(() => {
+                            this.playWelcomeVoice();
+                        }, 500);
+                    }
+                    // Убираем обработчик после первого клика
+                    document.removeEventListener('click', playOnFirstClick);
+                    document.removeEventListener('keydown', playOnFirstClick);
+                };
+                
+                document.addEventListener('click', playOnFirstClick);
+                document.addEventListener('keydown', playOnFirstClick);
+                
+                // Авто-запуск через 3 секунды если пользователь бездействует
+                setTimeout(() => {
+                    if (!this.hasPlayedWelcome && this.isSoundEnabled) {
+                        this.playWelcomeVoice();
+                    }
+                }, 3000);
             }
             
             playWelcomeVoice() {
-                if (!this.isSoundEnabled || this.hasPlayedWelcome) return;
+                if (!this.isSoundEnabled) return;
                 
                 if ('speechSynthesis' in window) {
-                    setTimeout(() => {
+                    // Останавливаем любую текущую речь
+                    speechSynthesis.cancel();
+                    
+                    // Ждем загрузки голосов
+                    const speakWithVoice = () => {
                         const voices = speechSynthesis.getVoices();
-                        const russianVoice = voices.find(voice => 
-                            voice.lang.includes('ru') || voice.lang.includes('RU')
-                        );
+                        
+                        // Ищем русский голос
+                        let voice = voices.find(v => v.lang === 'ru-RU');
+                        if (!voice) {
+                            voice = voices.find(v => v.lang.includes('ru'));
+                        }
+                        if (!voice) {
+                            voice = voices.find(v => v.lang.includes('RU'));
+                        }
+                        if (!voice) {
+                            voice = voices[0]; // Берем первый доступный
+                        }
                         
                         const welcomeMessage = new SpeechSynthesisUtterance(
-                            "Добро пожаловать в Aurora. Пространство уюта и безопасности."
+                            "Добро пожаловать в Aurora. Пространство уюта и безопасности. Ваши мысли — только ваши."
                         );
                         
                         welcomeMessage.lang = 'ru-RU';
@@ -1067,22 +1117,46 @@
                         welcomeMessage.pitch = 1.0;
                         welcomeMessage.volume = 1.0;
                         
-                        if (russianVoice) {
-                            welcomeMessage.voice = russianVoice;
+                        if (voice) {
+                            welcomeMessage.voice = voice;
                         }
                         
-                        speechSynthesis.cancel();
-                        speechSynthesis.speak(welcomeMessage);
+                        // Устанавливаем обработчики
+                        welcomeMessage.onstart = () => {
+                            console.log('🎵 Голосовое приветствие началось');
+                            this.soundToggle.classList.add('sound-pulse');
+                        };
                         
-                        this.hasPlayedWelcome = true;
-                        
-                        // Пульсация кнопки звука
-                        this.soundToggle.classList.add('sound-pulse');
-                        setTimeout(() => {
+                        welcomeMessage.onend = () => {
+                            console.log('✅ Голосовое приветствие завершено');
                             this.soundToggle.classList.remove('sound-pulse');
-                        }, 3000);
+                            this.hasPlayedWelcome = true;
+                        };
                         
-                    }, 500);
+                        welcomeMessage.onerror = (event) => {
+                            console.log('❌ Ошибка голоса:', event.error);
+                            this.soundToggle.classList.remove('sound-pulse');
+                        };
+                        
+                        // Произносим
+                        speechSynthesis.speak(welcomeMessage);
+                    };
+                    
+                    // Если голоса уже загружены
+                    if (speechSynthesis.getVoices().length > 0) {
+                        speakWithVoice();
+                    } else {
+                        // Ждем загрузки голосов
+                        speechSynthesis.onvoiceschanged = speakWithVoice;
+                    }
+                    
+                    // Пульсация кнопки звука
+                    this.soundToggle.classList.add('sound-pulse');
+                    
+                } else {
+                    console.log('❌ SpeechSynthesis не поддерживается в этом браузере');
+                    // Вместо голоса играем звук
+                    this.playSound('success');
                 }
             }
             
@@ -1303,6 +1377,13 @@
                 console.log('🎵 Голосовое приветствие активировано');
                 console.log('🔊 Простая звуковая система готова');
                 console.log('🎯 Попробуйте поиск: "пойду гулять"');
+                
+                // Вместо автоматического приветствия - показываем кнопку
+                setTimeout(() => {
+                    if (!window.soundSystem.hasPlayedWelcome) {
+                        console.log('💡 Нажмите кнопку "Приветствие" или используйте систему');
+                    }
+                }, 1000);
             }
 
             loadNotes() {
@@ -1757,10 +1838,6 @@
                         this.updateAnalytics();
                         window.soundSystem.playSound('delete');
                     }
-                });
-                
-                document.getElementById('action-test-voice').addEventListener('click', () => {
-                    window.soundSystem.playWelcomeVoice();
                 });
                 
                 document.getElementById('export-btn').addEventListener('click', () => {
