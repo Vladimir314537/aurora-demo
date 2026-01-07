@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurora 4.0 - Система мышления с умным поиском</title>
+    <title>Aurora 5.0 WOW Edition - Система мышления с умным поиском</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -42,6 +42,302 @@
                 radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.1) 0%, transparent 20%);
         }
 
+        /* ===== НОВЫЕ СТИЛИ ДЛЯ WOW ЭФФЕКТОВ ===== */
+        
+        /* ГЕРОЙ-СЕКЦИЯ С КАРТИНКОЙ И КНОПКОЙ */
+        .hero-section {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            box-shadow: 0 15px 35px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .hero-text {
+            animation: fadeInLeft 0.8s ease-out;
+        }
+        
+        .hero-title {
+            font-size: 2.8em;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        /* КНОПКА ПРИВЕТСТВИЯ */
+        .welcome-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+        }
+        
+        .welcome-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .welcome-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .welcome-btn:hover:before {
+            left: 100%;
+        }
+        
+        /* КОНТЕЙНЕР ДЛЯ КАРТИНКИ */
+        .image-container {
+            animation: fadeInRight 0.8s ease-out;
+            position: relative;
+            height: 400px;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .image-placeholder {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+        
+        .image-placeholder i {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .image-placeholder h3 {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        
+        .image-placeholder p {
+            font-size: 0.9em;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .generated-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+        }
+        
+        /* АНИМАЦИИ */
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* АУДИО КОНТРОЛЛЕР (плавающая панель) */
+        .audio-controller {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: fadeInRight 0.5s ease-out;
+        }
+        
+        .audio-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .audio-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+        
+        .audio-btn.playing {
+            animation: pulse 2s infinite;
+        }
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .volume-slider {
+            width: 100px;
+            height: 6px;
+            -webkit-appearance: none;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+        
+        /* МОДАЛЬНОЕ ОКНО ДЛЯ ЗВУКА */
+        .audio-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .audio-modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .audio-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .audio-modal-header h3 {
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .close-modal:hover {
+            color: var(--text-primary);
+        }
+        
+        /* СТАРЫЕ СТИЛИ ИЗ AURORA 4.0 (оставлены) */
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -49,8 +345,7 @@
             grid-template-columns: 1fr 350px;
             gap: 30px;
         }
-
-        /* Шапка */
+        
         .header {
             grid-column: 1 / -1;
             display: flex;
@@ -60,13 +355,13 @@
             border-bottom: 1px solid var(--border);
             margin-bottom: 30px;
         }
-
+        
         .logo {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-
+        
         .logo-icon {
             width: 50px;
             height: 50px;
@@ -78,7 +373,7 @@
             font-size: 24px;
             color: white;
         }
-
+        
         .logo-text h1 {
             font-size: 28px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -86,13 +381,13 @@
             -webkit-text-fill-color: transparent;
             font-weight: 800;
         }
-
+        
         .logo-text .tagline {
             color: var(--text-secondary);
             font-size: 14px;
             margin-top: 5px;
         }
-
+        
         .version-badge {
             background: linear-gradient(135deg, var(--accent), #34d399);
             color: white;
@@ -102,16 +397,14 @@
             font-weight: 600;
             margin-left: 10px;
         }
-
-        /* Основной контент */
+        
         .main-content {
             display: flex;
             flex-direction: column;
             gap: 30px;
         }
-
-        /* Поиск */
-        .search-section {
+        
+        .search-section, .create-note, .notes-section {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: 16px;
@@ -119,595 +412,22 @@
             border: 1px solid var(--border);
             box-shadow: 0 10px 25px var(--shadow);
         }
-
-        .search-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .search-header i {
-            color: var(--primary);
-            font-size: 24px;
-        }
-
-        .search-header h2 {
-            font-size: 20px;
-        }
-
-        .search-box {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 16px 50px 16px 20px;
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 16px;
-            transition: var(--transition);
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-
-        .search-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--primary);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .search-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-50%) scale(1.05);
-        }
-
-        .search-filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 14px;
-        }
-
-        .filter-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .filter-btn:hover:not(.active) {
-            background: var(--bg-secondary);
-        }
-
-        /* Создание заметки */
-        .create-note {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 25px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 25px var(--shadow);
-        }
-
-        .create-note h2 {
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .note-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            color: var(--text-secondary);
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .form-input {
-            padding: 12px 15px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 16px;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .tags-input {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            padding: 10px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            min-height: 50px;
-        }
-
-        .tag {
-            background: var(--primary);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .tag-remove {
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        #tag-input {
-            flex: 1;
-            min-width: 100px;
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-            outline: none;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            font-size: 15px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            flex: 1;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-secondary);
-        }
-
-        /* Список заметок */
-        .notes-section {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 25px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 25px var(--shadow);
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .section-header h2 {
-            font-size: 20px;
-        }
-
-        .notes-count {
-            background: var(--bg-tertiary);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .notes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            max-height: 600px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .note-card {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid var(--border);
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .note-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px var(--shadow);
-        }
-
-        .note-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
-        }
-
-        .note-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-right: 10px;
-        }
-
-        .note-badges {
-            display: flex;
-            gap: 5px;
-        }
-
-        .badge {
-            font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-weight: 600;
-        }
-
-        .badge-idea {
-            background: linear-gradient(135deg, var(--secondary), #a78bfa);
-            color: white;
-        }
-
-        .badge-question {
-            background: linear-gradient(135deg, var(--warning), #fbbf24);
-            color: white;
-        }
-
-        .badge-important {
-            background: linear-gradient(135deg, var(--danger), #f87171);
-            color: white;
-        }
-
-        .badge-movement {
-            background: linear-gradient(135deg, var(--accent), #34d399);
-            color: white;
-        }
-
-        .note-text {
-            color: var(--text-secondary);
-            font-size: 15px;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            max-height: 100px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .note-text::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 50%;
-            height: 20px;
-            background: linear-gradient(to right, transparent, var(--bg-secondary));
-        }
-
-        .note-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--border);
-        }
-
-        .note-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .note-tag {
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-        }
-
-        .note-date {
-            color: var(--text-secondary);
-            font-size: 12px;
-            white-space: nowrap;
-        }
-
-        .note-actions {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            display: flex;
-            gap: 8px;
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        .note-card:hover .note-actions {
-            opacity: 1;
-        }
-
-        .action-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            background: var(--bg-tertiary);
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .action-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Боковая панель */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-
-        .analytics-card, .quick-actions-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 25px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 25px var(--shadow);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .card-header h3 {
-            font-size: 18px;
-        }
-
-        .card-header i {
-            color: var(--primary);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 15px;
-            background: var(--bg-secondary);
-            border-radius: 10px;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .actions-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .action-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 15px;
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .action-item:hover {
-            background: var(--bg-tertiary);
-            transform: translateX(5px);
-        }
-
-        .action-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .action-text {
-            flex: 1;
-        }
-
-        .action-text span {
-            font-size: 14px;
-            font-weight: 600;
-            display: block;
-        }
-
-        .action-text small {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        /* Аналитика поиска */
-        .search-analytics {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-        }
-
-        .search-analytics h4 {
-            margin-bottom: 15px;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .analytics-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        .analytics-label {
-            color: var(--text-secondary);
-        }
-
-        .analytics-value {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        /* Умный поиск */
-        .smart-search-info {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-        }
-
-        .smart-search-info h4 {
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        .smart-search-info p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-
-        /* Паттерны */
-        .search-patterns {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .pattern-tag {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--accent);
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        /* Состояние пустого поиска */
-        .empty-state {
-            text-align: center;
-            padding: 50px 20px;
-        }
-
-        .empty-icon {
-            font-size: 48px;
-            color: var(--border);
-            margin-bottom: 20px;
-        }
-
-        .empty-state h3 {
-            margin-bottom: 10px;
-            color: var(--text-secondary);
-        }
-
-        .empty-state p {
-            color: var(--text-secondary);
-            max-width: 400px;
-            margin: 0 auto 20px;
-        }
-
-        /* Адаптивность */
+        
+        /* АДАПТИВНОСТЬ ДЛЯ НОВЫХ БЛОКОВ */
         @media (max-width: 1200px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .image-container {
+                height: 300px;
+            }
+            
+            .hero-title {
+                font-size: 2.2em;
+            }
+            
             .container {
                 grid-template-columns: 1fr;
             }
@@ -719,8 +439,33 @@
                 gap: 20px;
             }
         }
-
+        
         @media (max-width: 768px) {
+            .hero-section {
+                padding: 25px;
+            }
+            
+            .hero-title {
+                font-size: 1.8em;
+            }
+            
+            .welcome-btn {
+                padding: 14px 24px;
+                font-size: 16px;
+            }
+            
+            .audio-controller {
+                bottom: 10px;
+                right: 10px;
+                padding: 12px;
+            }
+            
+            .audio-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
             .sidebar {
                 grid-template-columns: 1fr;
             }
@@ -735,44 +480,44 @@
                 gap: 10px;
             }
         }
-
-        /* Анимации */
+        
+        /* СТАРЫЕ АНИМАЦИИ */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
+        
         .note-card {
             animation: fadeIn 0.3s ease-out;
         }
-
-        /* Скроллбар */
+        
+        /* СКРОЛЛБАР */
         ::-webkit-scrollbar {
             width: 8px;
         }
-
+        
         ::-webkit-scrollbar-track {
             background: var(--bg-secondary);
             border-radius: 4px;
         }
-
+        
         ::-webkit-scrollbar-thumb {
             background: var(--primary);
             border-radius: 4px;
         }
-
+        
         ::-webkit-scrollbar-thumb:hover {
             background: var(--primary-dark);
         }
-
-        /* Выделение совпадений */
+        
+        /* ВЫДЕЛЕНИЕ СОВПАДЕНИЙ */
         .highlight {
             background-color: rgba(99, 102, 241, 0.3);
             padding: 0 2px;
             border-radius: 3px;
         }
         
-        /* Показать совпадения */
+        /* ПОКАЗАТЬ СОВПАДЕНИЯ */
         .search-results-info {
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(34, 197, 94, 0.1));
             border-radius: 10px;
@@ -791,15 +536,96 @@
     </style>
 </head>
 <body>
+    <!-- АУДИО ЭЛЕМЕНТЫ (ДОБАВЬТЕ СЮДА ВАШИ ФАЙЛЫ) -->
+    <!-- МЕСТО ДЛЯ ВСТАВКИ BASE64 АУДИО ↓ -->
+    <audio id="welcomeAudio" preload="auto">
+        <!-- ВАШЕ АУДИО В BASE64 ФОРМАТЕ -->
+        <!-- ПРИМЕР: <source src="data:audio/ogg;base64,ВАШ_BASE64_КОД" type="audio/ogg"> -->
+        <source src="" type="audio/ogg" id="audioSource">
+        Ваш браузер не поддерживает аудио элементы.
+    </audio>
+    
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ЗВУКА -->
+    <div class="audio-modal" id="audioModal">
+        <div class="audio-modal-content">
+            <div class="audio-modal-header">
+                <h3><i class="fas fa-music"></i> Аудио-система Aurora</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="audio-info">
+                <h4>Добавление аудио-приветствия</h4>
+                <p>Для добавления аудио выполните следующие шаги:</p>
+                <ol style="margin: 15px 0 15px 20px; line-height: 1.8;">
+                    <li>Сконвертируйте ваш OGG файл в Base64</li>
+                    <li>Вставьте полученный код в тег audio выше</li>
+                    <li>Сохраните изменения</li>
+                    <li>Нажмите кнопку "Воспроизвести приветствие"</li>
+                </ol>
+                <div style="background: rgba(99, 102, 241, 0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                    <strong>Формат вставки:</strong>
+                    <code style="display: block; margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 5px; font-size: 12px;">
+                        &lt;source src="data:audio/ogg;base64,ВАШ_КОД_ЗДЕСЬ" type="audio/ogg"&gt;
+                    </code>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- АУДИО КОНТРОЛЛЕР -->
+    <div class="audio-controller">
+        <button class="audio-btn" id="playAudioBtn" title="Воспроизвести приветствие">
+            <i class="fas fa-play"></i>
+        </button>
+        <div class="volume-control">
+            <i class="fas fa-volume-up" style="color: var(--text-secondary);"></i>
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="70">
+        </div>
+        <button class="audio-btn" id="infoAudioBtn" title="Информация об аудио">
+            <i class="fas fa-info"></i>
+        </button>
+    </div>
+    
     <div class="container">
-        <!-- Шапка -->
+        <!-- ГЕРОЙ-СЕКЦИЯ С КАРТИНКОЙ И ПРИВЕТСТВИЕМ (НОВЫЙ БЛОК) -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        Aurora 5.0 WOW Edition<br>
+                        <span style="font-size: 0.7em; color: var(--accent);">Защита мыслей начинается здесь</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Первая система мышления с умным поиском, которая понимает разные формы слов и никогда не шпионит за вами. 
+                        Ваши мысли остаются только вашими.
+                    </p>
+                    <button class="welcome-btn" id="welcomeBtn">
+                        <i class="fas fa-play-circle"></i>
+                        Воспроизвести приветствие Aurora
+                    </button>
+                </div>
+                <div class="image-container">
+                    <!-- МЕСТО ДЛЯ ВСТАВКИ BASE64 КАРТИНКИ ↓ -->
+                    <div class="image-placeholder" id="imagePlaceholder">
+                        <i class="fas fa-image"></i>
+                        <h3>Кибер-ангел Aurora</h3>
+                        <p>Здесь будет ваша сгенерированная картинка с кибер-ангелом</p>
+                        <p style="margin-top: 10px; font-size: 0.8em; opacity: 0.7;">
+                            Размер: 1200×800px | Формат: PNG/JPG
+                        </p>
+                    </div>
+                    <img src="" alt="Кибер-ангел Aurora" class="generated-image" id="generatedImage" style="display: none;">
+                </div>
+            </div>
+        </section>
+        
+        <!-- ШАПКА (старая, но обновленная) -->
         <header class="header">
             <div class="logo">
                 <div class="logo-icon">
                     <i class="fas fa-brain"></i>
                 </div>
                 <div class="logo-text">
-                    <h1>Aurora <span class="version-badge">4.0</span></h1>
+                    <h1>Aurora <span class="version-badge">5.0 WOW Edition</span></h1>
                     <div class="tagline">Система мышления с умным поиском</div>
                 </div>
             </div>
@@ -810,7 +636,7 @@
             </div>
         </header>
 
-        <!-- Основной контент -->
+        <!-- ОСНОВНОЙ КОНТЕНТ (старый код) -->
         <main class="main-content">
             <!-- Поиск -->
             <section class="search-section">
@@ -885,9 +711,8 @@
             </section>
         </main>
 
-        <!-- Боковая панель -->
+        <!-- БОКОВАЯ ПАНЕЛЬ (старый код) -->
         <aside class="sidebar">
-            <!-- Аналитика -->
             <div class="analytics-card">
                 <div class="card-header">
                     <i class="fas fa-chart-line"></i>
@@ -928,7 +753,6 @@
                 </div>
             </div>
 
-            <!-- Быстрые действия -->
             <div class="quick-actions-card">
                 <div class="card-header">
                     <i class="fas fa-bolt"></i>
@@ -977,7 +801,339 @@
     </div>
 
     <script>
-        // ДЕМО-ЗАМЕТКИ С ОБНОВЛЕННЫМ СОДЕРЖАНИЕМ ДЛЯ УМНОГО ПОИСКА
+        // ============================
+        // НОВЫЙ КОД ДЛЯ АУДИО И КАРТИНОК
+        // ============================
+        
+        class AudioSystem {
+            constructor() {
+                this.audio = document.getElementById('welcomeAudio');
+                this.volumeSlider = document.getElementById('volumeSlider');
+                this.playBtn = document.getElementById('playAudioBtn');
+                this.welcomeBtn = document.getElementById('welcomeBtn');
+                this.infoBtn = document.getElementById('infoAudioBtn');
+                this.modal = document.getElementById('audioModal');
+                this.closeModalBtn = document.getElementById('closeModal');
+                this.isPlaying = false;
+                
+                this.init();
+            }
+            
+            init() {
+                // Настройка громкости
+                this.volumeSlider.addEventListener('input', (e) => {
+                    this.audio.volume = e.target.value / 100;
+                });
+                
+                // Кнопка воспроизведения в контроллере
+                this.playBtn.addEventListener('click', () => {
+                    this.togglePlay();
+                });
+                
+                // Кнопка приветствия в герое
+                this.welcomeBtn.addEventListener('click', () => {
+                    this.playWelcome();
+                });
+                
+                // Кнопка информации
+                this.infoBtn.addEventListener('click', () => {
+                    this.showAudioInfo();
+                });
+                
+                // Закрытие модального окна
+                this.closeModalBtn.addEventListener('click', () => {
+                    this.hideAudioInfo();
+                });
+                
+                // Клик вне модального окна
+                window.addEventListener('click', (e) => {
+                    if (e.target === this.modal) {
+                        this.hideAudioInfo();
+                    }
+                });
+                
+                // События аудио
+                this.audio.addEventListener('play', () => {
+                    this.isPlaying = true;
+                    this.playBtn.classList.add('playing');
+                    this.playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                });
+                
+                this.audio.addEventListener('pause', () => {
+                    this.isPlaying = false;
+                    this.playBtn.classList.remove('playing');
+                    this.playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                });
+                
+                this.audio.addEventListener('ended', () => {
+                    this.isPlaying = false;
+                    this.playBtn.classList.remove('playing');
+                    this.playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                });
+                
+                // Проверка доступности аудио
+                this.checkAudioAvailability();
+            }
+            
+            playWelcome() {
+                try {
+                    if (this.audio.src || this.audio.srcObject) {
+                        this.audio.currentTime = 0;
+                        this.audio.play();
+                        console.log('🎵 Аудио приветствие воспроизводится');
+                        this.showNotification('🔊 Воспроизводится приветствие Aurora');
+                    } else {
+                        this.showAudioInfo();
+                        console.log('🔇 Аудио не загружено, показываем инструкцию');
+                        this.showNotification('❌ Аудио не загружено. Нажмите на кнопку информации для инструкций.');
+                    }
+                } catch (error) {
+                    console.error('Ошибка воспроизведения:', error);
+                    this.showAudioInfo();
+                }
+            }
+            
+            togglePlay() {
+                if (this.isPlaying) {
+                    this.audio.pause();
+                } else {
+                    this.playWelcome();
+                }
+            }
+            
+            showAudioInfo() {
+                this.modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+            
+            hideAudioInfo() {
+                this.modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            checkAudioAvailability() {
+                // Проверяем, есть ли источник аудио
+                const hasSource = this.audio.src || 
+                                 (this.audio.querySelector('source') && 
+                                  this.audio.querySelector('source').src);
+                
+                if (!hasSource) {
+                    console.log('ℹ️ Аудио файл не загружен. Используйте Base64 кодирование.');
+                } else {
+                    console.log('✅ Аудио файл загружен и готов к воспроизведению');
+                }
+            }
+            
+            showNotification(message) {
+                // Создаем уведомление
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--card-bg);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid var(--border);
+                    border-radius: 10px;
+                    padding: 15px 20px;
+                    color: var(--text-primary);
+                    z-index: 3000;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                    animation: slideInRight 0.3s ease;
+                    max-width: 300px;
+                `;
+                notification.innerHTML = `<i class="fas fa-info-circle" style="margin-right: 10px;"></i>${message}`;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOutRight 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+            
+            // Метод для загрузки аудио из Base64 (для использования из консоли)
+            loadAudioFromBase64(base64String) {
+                try {
+                    const sourceElement = this.audio.querySelector('source');
+                    if (sourceElement) {
+                        sourceElement.src = `data:audio/ogg;base64,${base64String}`;
+                        this.audio.load();
+                        console.log('✅ Аудио загружено из Base64');
+                        this.checkAudioAvailability();
+                        return true;
+                    }
+                } catch (error) {
+                    console.error('Ошибка загрузки аудио:', error);
+                }
+                return false;
+            }
+        }
+        
+        class ImageSystem {
+            constructor() {
+                this.placeholder = document.getElementById('imagePlaceholder');
+                this.image = document.getElementById('generatedImage');
+                this.isImageLoaded = false;
+                
+                this.init();
+            }
+            
+            init() {
+                // Проверяем, есть ли уже изображение
+                this.checkImage();
+                
+                // Добавляем кнопку для тестирования
+                this.addTestButton();
+            }
+            
+            checkImage() {
+                if (this.image.src) {
+                    this.showImage();
+                } else {
+                    console.log('🖼️ Изображение не загружено. Используйте Base64 или URL.');
+                }
+            }
+            
+            showImage() {
+                this.placeholder.style.display = 'none';
+                this.image.style.display = 'block';
+                this.isImageLoaded = true;
+                console.log('✅ Изображение отображается');
+            }
+            
+            hideImage() {
+                this.placeholder.style.display = 'block';
+                this.image.style.display = 'none';
+                this.isImageLoaded = false;
+            }
+            
+            loadImageFromBase64(base64String) {
+                try {
+                    this.image.src = `data:image/png;base64,${base64String}`;
+                    this.image.onload = () => {
+                        this.showImage();
+                        console.log('✅ Изображение загружено из Base64');
+                        this.showImageNotification('🖼️ Картинка кибер-ангела загружена!');
+                    };
+                    this.image.onerror = () => {
+                        console.error('❌ Ошибка загрузки изображения');
+                        this.hideImage();
+                    };
+                    return true;
+                } catch (error) {
+                    console.error('Ошибка загрузки изображения:', error);
+                    return false;
+                }
+            }
+            
+            loadImageFromUrl(url) {
+                try {
+                    this.image.src = url;
+                    this.image.onload = () => {
+                        this.showImage();
+                        console.log('✅ Изображение загружено по URL');
+                    };
+                    this.image.onerror = () => {
+                        console.error('❌ Ошибка загрузки изображения по URL');
+                        this.hideImage();
+                    };
+                    return true;
+                } catch (error) {
+                    console.error('Ошибка загрузки изображения:', error);
+                    return false;
+                }
+            }
+            
+            addTestButton() {
+                // Добавляем скрытую кнопку для разработчиков
+                const testBtn = document.createElement('button');
+                testBtn.innerHTML = '<i class="fas fa-wrench"></i>';
+                testBtn.style.cssText = `
+                    position: absolute;
+                    bottom: 10px;
+                    right: 10px;
+                    background: rgba(0,0,0,0.5);
+                    border: none;
+                    color: white;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    z-index: 10;
+                    opacity: 0.5;
+                    transition: opacity 0.3s;
+                `;
+                testBtn.title = 'Тест изображения';
+                testBtn.onmouseenter = () => testBtn.style.opacity = '1';
+                testBtn.onmouseleave = () => testBtn.style.opacity = '0.5';
+                
+                testBtn.onclick = () => {
+                    const testUrl = prompt('Введите URL тестового изображения:');
+                    if (testUrl) {
+                        this.loadImageFromUrl(testUrl);
+                    }
+                };
+                
+                this.placeholder.appendChild(testBtn);
+            }
+            
+            showImageNotification(message) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 20px;
+                    background: var(--card-bg);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid var(--border);
+                    border-radius: 10px;
+                    padding: 15px 20px;
+                    color: var(--text-primary);
+                    z-index: 3000;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                    animation: slideInLeft 0.3s ease;
+                    max-width: 300px;
+                `;
+                notification.innerHTML = `<i class="fas fa-image" style="margin-right: 10px;"></i>${message}`;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOutLeft 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        }
+        
+        // Добавляем CSS анимации для уведомлений
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            
+            @keyframes slideInLeft {
+                from { transform: translateX(-100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOutLeft {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(-100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // ============================
+        // СТАРЫЙ КОД AURORA APP (модифицированный)
+        // ============================
+        
+        // ДЕМО-ЗАМЕТКИ
         const demoNotes = [
             {
                 id: 1,
@@ -1076,7 +1232,7 @@
                 hasMovement: true
             }
         ];
-
+        
         class AuroraApp {
             constructor() {
                 this.notes = this.loadNotes();
@@ -1084,22 +1240,34 @@
                 this.searchInstance = new SmartSearch();
                 this.currentQuery = '';
                 this.isSearching = false;
+                this.audioSystem = new AudioSystem();
+                this.imageSystem = new ImageSystem();
                 this.init();
             }
-
+            
             init() {
                 this.renderNotes();
                 this.setupEventListeners();
                 this.updateAnalytics();
                 this.showWelcomeMessage();
             }
-
+            
             showWelcomeMessage() {
-                console.log('🚀 Aurora 4.0 запущена!');
+                console.log('🚀 Aurora 5.0 WOW Edition запущена!');
                 console.log('🎯 Попробуйте поиск: "пойду гулять" или "планы перемещения"');
-                console.log('✅ Поиск понимает разные формы слов: пойти = пойду = пошел');
+                console.log('🎵 Нажмите кнопку приветствия, чтобы услышать Aurora');
+                console.log('🖼️ Картинка кибер-ангела будет отображена после загрузки');
+                
+                // Автоматический тест через 2 секунды
+                setTimeout(() => {
+                    if (!localStorage.getItem('aurora-welcome-shown')) {
+                        console.log('👋 Первый запуск - показываем возможности');
+                        this.audioSystem.showNotification('🎉 Добро пожаловать в Aurora 5.0 WOW Edition!');
+                        localStorage.setItem('aurora-welcome-shown', 'true');
+                    }
+                }, 2000);
             }
-
+            
             loadNotes() {
                 const saved = localStorage.getItem('aurora-notes');
                 if (saved) {
@@ -1112,11 +1280,11 @@
                 }
                 return [...demoNotes];
             }
-
+            
             saveNotes() {
                 localStorage.setItem('aurora-notes', JSON.stringify(this.notes));
             }
-
+            
             renderNotes(notesToRender = null) {
                 const notes = notesToRender || this.notes;
                 const container = document.getElementById('notes-container');
@@ -1173,7 +1341,7 @@
                 
                 countElement.textContent = `${notes.length} замет${this.getPluralForm(notes.length)}`;
             }
-
+            
             createNoteElement(note) {
                 const element = document.createElement('div');
                 element.className = 'note-card';
@@ -1234,11 +1402,11 @@
                 
                 return element;
             }
-
+            
             escapeRegExp(string) {
                 return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             }
-
+            
             addNote(title, text, tags) {
                 const newNote = {
                     id: Date.now(),
@@ -1259,14 +1427,14 @@
                 this.renderNotes();
                 this.updateAnalytics();
             }
-
+            
             checkForMovement(text) {
                 const movementWords = ['пойду', 'пойти', 'ходить', 'сходить', 'отправиться', 'двигаться', 'передвигаться', 
                                       'гулять', 'прогулка', 'работа', 'магазин', 'спортзал', 'парк', 'кафе', 'кино',
                                       'ехать', 'поехать', 'пройтись', 'прогуляться', 'съездить'];
                 return movementWords.some(word => text.toLowerCase().includes(word));
             }
-
+            
             deleteNote(id) {
                 if (confirm('Удалить эту заметку?')) {
                     this.notes = this.notes.filter(note => note.id !== id);
@@ -1275,7 +1443,7 @@
                     this.updateAnalytics();
                 }
             }
-
+            
             editNote(id) {
                 const note = this.notes.find(n => n.id === id);
                 if (note) {
@@ -1297,7 +1465,7 @@
                     }, 100);
                 }
             }
-
+            
             performSearch(query) {
                 console.log('🔍 Начинаем поиск:', query);
                 
@@ -1320,7 +1488,7 @@
                 
                 return filteredResults;
             }
-
+            
             applyFilter(notes, filter) {
                 if (filter === 'all') return notes;
                 
@@ -1334,7 +1502,7 @@
                     }
                 });
             }
-
+            
             updateSearchAnalytics(query, results) {
                 document.getElementById('current-query').textContent = query || '-';
                 document.getElementById('match-count').textContent = results.length;
@@ -1356,7 +1524,7 @@
                 // Обновить общую аналитику
                 this.updateAnalytics();
             }
-
+            
             updateAnalytics() {
                 document.getElementById('total-notes').textContent = this.notes.length;
                 
@@ -1366,7 +1534,7 @@
                 document.getElementById('movement-notes').textContent = movementNotes;
                 document.getElementById('ideas-notes').textContent = ideaNotes;
             }
-
+            
             formatDate(date) {
                 const now = new Date();
                 const diff = now - date;
@@ -1383,7 +1551,7 @@
                     minute: '2-digit'
                 });
             }
-
+            
             getPluralForm(number) {
                 const lastDigit = number % 10;
                 const lastTwoDigits = number % 100;
@@ -1393,7 +1561,7 @@
                 if (lastDigit >= 2 && lastDigit <= 4) return 'ки';
                 return 'ок';
             }
-
+            
             addTagToInput(tag) {
                 const container = document.getElementById('tags-container');
                 const tagElement = document.createElement('span');
@@ -1410,7 +1578,7 @@
                     tagElement.remove();
                 });
             }
-
+            
             setupEventListeners() {
                 // Форма добавления заметки
                 document.getElementById('note-form').addEventListener('submit', (e) => {
@@ -1541,7 +1709,7 @@
                     this.exportData();
                 });
             }
-
+            
             clearSearch() {
                 this.currentQuery = '';
                 this.isSearching = false;
@@ -1550,7 +1718,7 @@
                 this.updateSearchAnalytics('', this.notes);
                 document.getElementById('search-input').value = '';
             }
-
+            
             exportData() {
                 const dataStr = JSON.stringify(this.notes, null, 2);
                 const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
@@ -1563,7 +1731,7 @@
                 linkElement.click();
             }
         }
-
+        
         // КЛАСС УМНОГО ПОИСКА
         class SmartSearch {
             constructor() {
@@ -1591,7 +1759,7 @@
                 return this.queryAnalyzer.analyze(query);
             }
             
-            // УМНЫЙ ПОИСК С РАСШИРЕННОЙ ЛОГИКОЙ
+            // УМНЫЙ ПОИСК С РАСШИРЕННОЙ ЛОГИКОН
             intelligentSearch(query, notes, queryAnalysis) {
                 const results = [];
                 const queryWords = query.toLowerCase().split(' ').filter(w => w.length > 2);
@@ -1714,7 +1882,7 @@
                 return patternMap[pattern] || [];
             }
         }
-
+        
         // АНАЛИЗАТОР ЗАПРОСОВ
         class QueryAnalyzer {
             analyze(query) {
@@ -1935,7 +2103,7 @@
                 return [...new Set(forms)];
             }
         }
-
+        
         // ЛЕММАТИЗАТОР
         class Lemmatizer {
             lemmatize(text) {
@@ -2058,15 +2226,45 @@
                 return lemma.length > 2 ? lemma : word;
             }
         }
-
+        
+        // ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ ЗАГРУЗКИ ФАЙЛОВ
+        window.loadAudioFromBase64 = function(base64String) {
+            if (window.auroraApp && window.auroraApp.audioSystem) {
+                const result = window.auroraApp.audioSystem.loadAudioFromBase64(base64String);
+                if (result) {
+                    window.auroraApp.audioSystem.showNotification('✅ Аудио успешно загружено!');
+                }
+                return result;
+            }
+            return false;
+        };
+        
+        window.loadImageFromBase64 = function(base64String) {
+            if (window.auroraApp && window.auroraApp.imageSystem) {
+                const result = window.auroraApp.imageSystem.loadImageFromBase64(base64String);
+                if (result) {
+                    window.auroraApp.imageSystem.showImageNotification('✅ Картинка успешно загружена!');
+                }
+                return result;
+            }
+            return false;
+        };
+        
+        window.showAudioInstructions = function() {
+            if (window.auroraApp && window.auroraApp.audioSystem) {
+                window.auroraApp.audioSystem.showAudioInfo();
+            }
+        };
+        
         // ЗАПУСК ПРИЛОЖЕНИЯ
         document.addEventListener('DOMContentLoaded', () => {
             try {
                 window.auroraApp = new AuroraApp();
                 
-                // Авто-тест при загрузке (опционально)
+                // Авто-тест при загрузке
                 setTimeout(() => {
                     if (window.location.hash === '#test') {
+                        console.log('🧪 Запуск тестового режима...');
                         document.getElementById('search-input').value = 'пойду гулять';
                         document.getElementById('search-btn').click();
                     }
