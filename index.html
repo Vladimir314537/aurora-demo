@@ -137,153 +137,67 @@
             margin-right: auto;
         }
 
-        /* ===== БЛОК С АНГЕЛОМ ===== */
-        .angel-container {
+        /* ===== КОНТЕЙНЕР ДЛЯ КАРТИНКИ ===== */
+        .hero-image-container {
             position: relative;
             width: 100%;
-            max-width: 800px;
-            height: 500px;
+            max-width: 1200px;
             margin: 40px auto;
-            perspective: 1000px;
+            min-height: 500px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 25px;
+            border: 2px dashed rgba(0, 229, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
-        .angel-scene {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            animation: scene-rotate 20s infinite linear;
-        }
-
-        @keyframes scene-rotate {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
-        }
-
-        .portal {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, 
-                rgba(102, 126, 234, 0.8) 0%,
-                rgba(118, 75, 162, 0.6) 30%,
-                transparent 70%);
-            border-radius: 50%;
-            filter: blur(20px);
-            animation: portal-spin 10s infinite linear;
-        }
-
-        @keyframes portal-spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); opacity: 0.8; }
-            50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.1); opacity: 1; }
-            100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); opacity: 0.8; }
-        }
-
-        .angel-figure {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 300px;
-            z-index: 2;
-        }
-
-        .angel-body {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, 
-                rgba(0, 0, 0, 0.8) 0%,
-                rgba(50, 50, 50, 0.9) 100%);
-            border-radius: 40px;
-            box-shadow: 
-                0 0 50px rgba(0, 229, 255, 0.3),
-                inset 0 0 20px rgba(0, 229, 255, 0.2);
-        }
-
-        .angel-wings {
-            position: absolute;
-            width: 400px;
-            height: 200px;
-            left: 50%;
-            top: 30%;
-            transform: translateX(-50%);
-            background: linear-gradient(90deg, 
-                rgba(0, 229, 255, 0.3) 0%,
-                rgba(102, 126, 234, 0.4) 50%,
-                rgba(0, 229, 255, 0.3) 100%);
-            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
-            animation: wings-flap 4s infinite ease-in-out;
-        }
-
-        @keyframes wings-flap {
-            0%, 100% { transform: translateX(-50%) scaleY(1); }
-            50% { transform: translateX(-50%) scaleY(1.1); }
-        }
-
-        .aurora-sphere {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            left: 50%;
-            top: 65%;
-            transform: translate(-50%, -50%);
-            background: radial-gradient(circle at 30% 30%, 
-                #667eea 0%,
-                #764ba2 30%,
-                #0a0a1a 70%);
-            border-radius: 50%;
-            box-shadow: 
-                0 0 80px #667eea,
-                0 0 160px rgba(102, 126, 234, 0.5),
-                inset 0 0 30px rgba(255, 255, 255, 0.3);
-            border: 3px solid rgba(0, 229, 255, 0.5);
-            animation: sphere-float 3s infinite ease-in-out;
-            z-index: 3;
-        }
-
-        @keyframes sphere-float {
-            0%, 100% { transform: translate(-50%, -50%) translateY(0); }
-            50% { transform: translate(-50%, -50%) translateY(-20px); }
-        }
-
-        .sphere-lock {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 229, 255, 0.8);
-        }
-
-        .sphere-lock:before {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 15px;
-            background: #667eea;
-            top: -10px;
-            left: 5px;
-            border-radius: 10px 10px 0 0;
-        }
-
-        .sphere-text {
-            position: absolute;
-            bottom: 15px;
-            left: 0;
-            width: 100%;
+        .image-placeholder {
+            padding: 60px 40px;
             text-align: center;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            width: 100%;
+        }
+
+        .placeholder-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .placeholder-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .placeholder-details {
+            text-align: left;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(0, 229, 255, 0.1);
+            border-radius: 15px;
+            border-left: 4px solid #00e5ff;
+        }
+
+        .placeholder-details div {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .placeholder-details div:last-child {
+            border-bottom: none;
+        }
+
+        .generated-image-container {
+            width: 100%;
+            padding: 20px;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== ОСНОВНОЙ ИНТЕРФЕЙС AURORA ===== */
@@ -742,13 +656,8 @@
                 font-size: 1.2em;
             }
             
-            .angel-container {
-                height: 400px;
-            }
-            
-            .angel-wings {
-                width: 300px;
-                height: 150px;
+            .hero-image-container {
+                min-height: 400px;
             }
             
             .controls-section {
@@ -787,8 +696,8 @@
                 padding: 40px 15px;
             }
             
-            .angel-container {
-                height: 300px;
+            .hero-image-container {
+                min-height: 300px;
             }
             
             .main-interface {
@@ -823,17 +732,23 @@
                 </p>
             </div>
             
-            <!-- Блок с ангелом -->
-            <div class="angel-container">
-                <div class="angel-scene">
-                    <div class="portal"></div>
-                    <div class="angel-figure">
-                        <div class="angel-body"></div>
-                        <div class="angel-wings"></div>
-                        <div class="aurora-sphere">
-                            <div class="sphere-lock"></div>
-                            <div class="sphere-text">AURORA</div>
+            <!-- Блок с нашей сгенерированной картинкой -->
+            <div class="hero-image-container">
+                <div class="image-placeholder" id="heroImagePlaceholder">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">🌌</div>
+                        <h3>Кибер-ангел Aurora</h3>
+                        <p>Место для нашей эпичной картинки с ангелом из портала</p>
+                        <div class="sound-waves" style="margin: 30px auto; width: 200px;">
+                            <div class="wave"></div>
+                            <div class="wave"></div>
+                            <div class="wave"></div>
+                            <div class="wave"></div>
+                            <div class="wave"></div>
                         </div>
+                        <p style="opacity: 0.7; font-size: 0.9em;">
+                            Картинка будет загружена после генерации
+                        </p>
                     </div>
                 </div>
             </div>
@@ -1024,12 +939,11 @@
     <!-- ОСНОВНОЙ СКРИПТ -->
     <script>
     // ============================================
-    // AURORA THINKING SYSTEM v5.0 - PRODUCTION READY
+    // AURORA THINKING SYSTEM v5.0 - ИСПРАВЛЕННАЯ ВЕРСИЯ
     // ============================================
     
     class AuroraSystem {
         constructor() {
-            // Аудио элементы
             this.audioElements = {
                 welcome: document.getElementById('welcomeSound'),
                 click: document.getElementById('clickSound'),
@@ -1038,9 +952,7 @@
                 demo: document.getElementById('demoSound')
             };
             
-            // DOM элементы
             this.elements = {
-                // Управление
                 statusLog: document.getElementById('statusLog'),
                 volumeSlider: document.getElementById('volumeSlider'),
                 volumeValue: document.getElementById('volumeValue'),
@@ -1050,18 +962,13 @@
                 effectsValue: document.getElementById('effectsValue'),
                 autoPlayCheckbox: document.getElementById('autoPlayCheckbox'),
                 soundEffectsCheckbox: document.getElementById('soundEffectsCheckbox'),
-                
-                // Поиск
                 searchInput: document.getElementById('searchInput'),
                 searchBtn: document.getElementById('searchBtn'),
                 searchResults: document.getElementById('searchResults'),
-                
-                // Заметки
                 createNoteBtn: document.getElementById('createNoteBtn'),
                 notesGrid: document.getElementById('notesGrid')
             };
             
-            // Состояние системы
             this.state = {
                 initialized: false,
                 volume: 0.7,
@@ -1069,37 +976,26 @@
                 effects: 0.8,
                 autoPlay: true,
                 soundEnabled: true,
-                
-                // Поиск
                 searchHistory: [],
-                
-                // Заметки
-                notes: JSON.parse(localStorage.getItem('aurora-notes')) || this.getDefaultNotes(),
+                notes: [],
                 nextNoteId: 1000
             };
             
-            // База знаний для поиска
             this.knowledgeBase = this.createKnowledgeBase();
-            
             this.init();
         }
         
         init() {
             this.log('🚀 Инициализация Aurora Thinking System v5.0', 'success');
             
-            // 1. Настройка управления
+            // ВАЖНО: Загружаем заметки ПЕРЕД настройкой контролов
+            this.loadNotes();
+            
             this.setupControls();
-            
-            // 2. Настройка поиска
             this.setupSearch();
-            
-            // 3. Настройка заметок
             this.setupNotes();
-            
-            // 4. Восстановление состояния
             this.restoreState();
             
-            // 5. Автозапуск демо
             if (this.state.autoPlay) {
                 setTimeout(() => {
                     this.log('🔄 Запуск автоматической демонстрации...');
@@ -1109,18 +1005,66 @@
             
             this.state.initialized = true;
             this.log('✅ Система полностью инициализирована и готова к работе', 'success');
-            this.log('💡 Попробуйте умный поиск или создайте заметку!');
+            this.log(`📝 Загружено ${this.state.notes.length} заметок`, 'success');
+        }
+        
+        // ===== ЗАГРУЗКА ЗАМЕТОК =====
+        loadNotes() {
+            try {
+                const savedNotes = localStorage.getItem('aurora-notes');
+                if (savedNotes) {
+                    this.state.notes = JSON.parse(savedNotes);
+                    this.state.nextNoteId = Math.max(...this.state.notes.map(n => n.id), 1000) + 1;
+                } else {
+                    this.state.notes = this.getDefaultNotes();
+                    this.saveNotes();
+                }
+                this.log(`📝 Загружено ${this.state.notes.length} заметок из локального хранилища`, 'success');
+            } catch (error) {
+                this.log(`❌ Ошибка загрузки заметок: ${error.message}`, 'error');
+                this.state.notes = this.getDefaultNotes();
+            }
+        }
+        
+        getDefaultNotes() {
+            return [
+                {
+                    id: 1,
+                    title: "Добро пожаловать в Aurora!",
+                    content: "Это ваша первая защищённая заметка. Все данные хранятся локально в вашем браузере и никуда не отправляются.",
+                    tags: ["приветствие", "инструкция", "безопасность"],
+                    date: new Date().toISOString().split('T')[0],
+                    encrypted: false
+                },
+                {
+                    id: 2,
+                    title: "Идея для улучшения поиска",
+                    content: "Добавить возможность поиска по дате и тегам. Также реализовать нечёткий поиск для лучшего понимания запросов.",
+                    tags: ["идея", "поиск", "развитие", "фича"],
+                    date: new Date().toISOString().split('T')[0],
+                    encrypted: false
+                },
+                {
+                    id: 3,
+                    title: "Мысли о приватности",
+                    content: "В современном мире приватность становится роскошью. Нужно создавать инструменты, которые защищают личное пространство пользователя без компромиссов.",
+                    tags: ["приватность", "философия", "безопасность", "мысли"],
+                    date: new Date().toISOString().split('T')[0],
+                    encrypted: false
+                }
+            ];
         }
         
         // ===== УПРАВЛЕНИЕ =====
         setupControls() {
-            // Слайдеры
+            // Слайдер громкости
             this.elements.volumeSlider.addEventListener('input', (e) => {
                 this.state.volume = e.target.value / 100;
                 this.elements.volumeValue.textContent = `${e.target.value}%`;
                 this.log(`🔉 Громкость: ${e.target.value}%`);
             });
             
+            // Слайдер скорости
             this.elements.speedSlider.addEventListener('input', (e) => {
                 this.state.speed = e.target.value / 100;
                 this.elements.speedValue.textContent = `${e.target.value}%`;
@@ -1128,6 +1072,7 @@
                 this.log(`⚡ Скорость анимаций: ${e.target.value}%`);
             });
             
+            // Слайдер эффектов
             this.elements.effectsSlider.addEventListener('input', (e) => {
                 this.state.effects = e.target.value / 100;
                 this.elements.effectsValue.textContent = `${e.target.value}%`;
@@ -1192,35 +1137,35 @@
                     id: 1,
                     title: "Идея для стартапа",
                     content: "Создать умный дневник с шифрованием, который помогает структурировать мысли и находить связи между идеями.",
-                    tags: ["стартап", "идея", "дневник", "шифрование"],
+                    tags: ["стартап", "идея", "дневник", "шифрование", "мысли"],
                     date: "2024-01-15"
                 },
                 {
                     id: 2,
                     title: "План развития Aurora",
-                    content: "1. Запуск демо с голосом\n2. Краудфандинг кампания\n3. Разработка мобильного приложения\n4. Интеграция с календарем",
-                    tags: ["план", "развитие", "Aurora"],
+                    content: "1. Запуск демо с голосом\n2. Краудфандинг кампания\n3. Разработка мобильного приложения\n4. Интеграция с календарем и задачами",
+                    tags: ["план", "развитие", "Aurora", "дорожная карта"],
                     date: "2024-01-20"
                 },
                 {
                     id: 3,
                     title: "Мысли о приватности",
                     content: "В современном мире приватность становится роскошью. Нужно создавать инструменты, которые защищают личное пространство пользователя.",
-                    tags: ["приватность", "безопасность", "философия"],
+                    tags: ["приватность", "безопасность", "философия", "защита"],
                     date: "2024-01-25"
                 },
                 {
                     id: 4,
                     title: "Книги для прочтения",
-                    content: "1. 'Глубокие работы' Кэл Ньюпорт\n2. 'Атомные привычки' Джеймс Клир\n3. 'Digital Minimalism'",
-                    tags: ["книги", "обучение", "развитие"],
+                    content: "1. 'Глубокие работы' Кэл Ньюпорт\n2. 'Атомные привычки' Джеймс Клир\n3. 'Digital Minimalism' Кэл Ньюпорт\n4. 'Hooked' Нир Эяль",
+                    tags: ["книги", "обучение", "развитие", "чтение"],
                     date: "2024-02-01"
                 },
                 {
                     id: 5,
                     title: "Идея для путешествия",
-                    content: "Поехать в горы и провести неделю без интернета, ведя аналоговый дневник впечатлений.",
-                    tags: ["путешествие", "отдых", "идея"],
+                    content: "Поехать в горы и провести неделю без интернета, ведя аналоговый дневник впечатлений и размышлений.",
+                    tags: ["путешествие", "отдых", "идея", "приключение"],
                     date: "2024-02-05"
                 }
             ];
@@ -1260,16 +1205,10 @@
             this.log(`🔍 Поиск: "${searchQuery}"`);
             this.playSound('click');
             
-            // Нормализация запроса
             const normalizedQuery = this.normalizeQuery(searchQuery);
-            
-            // Поиск в базе знаний
             const results = this.hybridSearch(normalizedQuery);
-            
-            // Отображение результатов
             this.displaySearchResults(results, searchQuery);
             
-            // Сохранение в историю
             this.state.searchHistory.push({
                 query: searchQuery,
                 time: new Date().toISOString(),
@@ -1278,21 +1217,18 @@
         }
         
         normalizeQuery(query) {
-            // Приведение к нижнему регистру
             query = query.toLowerCase();
             
-            // Базовая лемматизация (упрощенная версия)
             const lemmatizationMap = {
-                'пойти': ['пойду', 'пошел', 'пошла', 'пошли', 'пойти'],
-                'идти': ['иду', 'шел', 'шла', 'шли', 'идти'],
-                'алкоголь': ['пиво', 'вино', 'водка', 'коньяк', 'алкоголь'],
-                'напиток': ['пить', 'пью', 'пил', 'напиток'],
-                'счастье': ['радость', 'удовольствие', 'блаженство', 'счастье'],
-                'работа': ['дело', 'занятие', 'труд', 'работа'],
-                'путешествие': ['поездка', 'тур', 'вояж', 'путешествие']
+                'пойти': ['пойду', 'пошел', 'пошла', 'пошли', 'пойти', 'ходить'],
+                'идти': ['иду', 'шел', 'шла', 'шли', 'идти', 'ходить'],
+                'алкоголь': ['пиво', 'вино', 'водка', 'коньяк', 'алкоголь', 'спиртное'],
+                'напиток': ['пить', 'пью', 'пил', 'напиток', 'выпить'],
+                'счастье': ['радость', 'удовольствие', 'блаженство', 'счастье', 'восторг'],
+                'работа': ['дело', 'занятие', 'труд', 'работа', 'проект'],
+                'путешествие': ['поездка', 'тур', 'вояж', 'путешествие', 'отпуск']
             };
             
-            // Расширение запроса синонимами
             let expandedQuery = [query];
             
             for (const [lemma, forms] of Object.entries(lemmatizationMap)) {
@@ -1334,7 +1270,6 @@
                 }
             });
             
-            // Сортировка по релевантности
             return results.sort((a, b) => b.score - a.score);
         }
         
@@ -1344,6 +1279,7 @@
                     <div style="text-align: center; padding: 40px; opacity: 0.7;">
                         <p>🔍 По запросу "${query}" ничего не найдено</p>
                         <p style="margin-top: 10px; font-size: 0.9em;">Попробуйте использовать другие слова или синонимы</p>
+                        <p style="margin-top: 5px; font-size: 0.8em;">Поиск понимает: "пойти" → "пойду", "пошел" | "алкоголь" → "пиво", "вино"</p>
                     </div>
                 `;
                 this.log(`❌ По запросу "${query}" ничего не найдено`, 'warning');
@@ -1381,34 +1317,11 @@
         }
         
         // ===== СИСТЕМА ЗАМЕТОК =====
-        getDefaultNotes() {
-            return [
-                {
-                    id: 1,
-                    title: "Добро пожаловать в Aurora!",
-                    content: "Это ваша первая защищённая заметка. Все данные хранятся локально в вашем браузере.",
-                    tags: ["приветствие", "инструкция"],
-                    date: new Date().toISOString().split('T')[0],
-                    encrypted: false
-                },
-                {
-                    id: 2,
-                    title: "Идея для улучшения поиска",
-                    content: "Добавить возможность поиска по дате и тегам. Также реализовать нечёткий поиск.",
-                    tags: ["идея", "поиск", "развитие"],
-                    date: new Date().toISOString().split('T')[0],
-                    encrypted: false
-                }
-            ];
-        }
-        
         setupNotes() {
-            // Кнопка создания заметки
             this.elements.createNoteBtn.addEventListener('click', () => {
                 this.createNote();
             });
             
-            // Загрузка существующих заметок
             this.renderNotes();
         }
         
@@ -1448,7 +1361,6 @@
             
             this.elements.notesGrid.innerHTML = html;
             
-            // Навешиваем обработчики
             document.querySelectorAll('.edit-note').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const noteId = parseInt(e.target.closest('.note-card').dataset.noteId);
@@ -1471,8 +1383,8 @@
             const content = prompt('Введите содержание заметки:', '');
             if (content === null) return;
             
-            const tagsInput = prompt('Введите теги через запятую:', '');
-            const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+            const tagsInput = prompt('Введите теги через запятую:', 'идея, заметка');
+            const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag) : ['заметка'];
             
             const newNote = {
                 id: this.state.nextNoteId++,
@@ -1501,8 +1413,12 @@
             const newContent = prompt('Редактировать содержание:', note.content);
             if (newContent === null) return;
             
+            const tagsInput = prompt('Редактировать теги (через запятую):', note.tags.join(', '));
+            const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag) : note.tags;
+            
             note.title = newTitle;
             note.content = newContent;
+            note.tags = tags;
             note.date = new Date().toISOString().split('T')[0];
             
             this.saveNotes();
@@ -1529,7 +1445,11 @@
         }
         
         saveNotes() {
-            localStorage.setItem('aurora-notes', JSON.stringify(this.state.notes));
+            try {
+                localStorage.setItem('aurora-notes', JSON.stringify(this.state.notes));
+            } catch (error) {
+                this.log(`❌ Ошибка сохранения заметок: ${error.message}`, 'error');
+            }
         }
         
         // ===== ДЕМОНСТРАЦИИ =====
@@ -1573,13 +1493,12 @@
             const demoNote = {
                 id: 999,
                 title: "Демонстрационная заметка",
-                content: "Это демонстрация работы системы заметок Aurora. Все заметки хранятся локально в вашем браузере.",
-                tags: ["демо", "пример", "Aurora"],
+                content: "Это демонстрация работы системы заметок Aurora. Все заметки хранятся локально в вашем браузере и защищены.",
+                tags: ["демо", "пример", "Aurora", "тест"],
                 date: new Date().toISOString().split('T')[0],
                 encrypted: false
             };
             
-            // Добавляем демо-заметку
             this.state.notes.unshift(demoNote);
             this.renderNotes();
             
@@ -1587,7 +1506,6 @@
             this.log('✅ Демо-заметка создана', 'success');
             this.playSound('success');
             
-            // Через 3 секунды удаляем демо-заметку
             setTimeout(() => {
                 const demoIndex = this.state.notes.findIndex(n => n.id === 999);
                 if (demoIndex !== -1) {
@@ -1635,6 +1553,7 @@
                 audio.currentTime = 0;
                 audio.volume = this.state.volume;
                 await audio.play();
+                this.log(`🔊 Воспроизведён звук: ${soundName}`);
             } catch (error) {
                 console.log(`Ошибка воспроизведения звука ${soundName}:`, error);
             }
@@ -1662,7 +1581,8 @@
                 '✓ Локальное хранение данных',
                 '✓ Отсутствие трекеров и аналитики',
                 '✓ Все вычисления в браузере',
-                '✓ Данные не отправляются на сервер'
+                '✓ Данные не отправляются на сервер',
+                '✓ Шифрование по желанию пользователя'
             ];
             
             checks.forEach((check, index) => {
@@ -1673,10 +1593,12 @@
         }
         
         showMessage(text, type = 'info') {
-            const message = document.createElement('div');
-            message.className = `log-entry ${type}`;
-            message.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
-            this.elements.statusLog.appendChild(message);
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${timestamp}] ${text}`;
+            
+            this.elements.statusLog.appendChild(entry);
             this.elements.statusLog.scrollTop = this.elements.statusLog.scrollHeight;
         }
         
@@ -1685,19 +1607,13 @@
         }
         
         updateEffectsIntensity() {
-            const elements = document.querySelectorAll('.aurora-sphere, .portal, .angel-wings');
+            const elements = document.querySelectorAll('.wave');
             elements.forEach(el => {
-                el.style.filter = `brightness(${0.5 + this.state.effects * 0.5})`;
+                el.style.opacity = 0.3 + (this.state.effects * 0.7);
             });
         }
         
         restoreState() {
-            // Восстанавливаем заметки
-            if (this.state.notes.length > 0) {
-                this.log(`📝 Загружено ${this.state.notes.length} заметок из локального хранилища`, 'success');
-            }
-            
-            // Восстанавливаем настройки
             const savedVolume = localStorage.getItem('aurora-volume');
             if (savedVolume) {
                 this.state.volume = parseFloat(savedVolume);
@@ -1732,27 +1648,10 @@
     document.addEventListener('DOMContentLoaded', () => {
         window.aurora = new AuroraSystem();
         
-        // Добавляем стили для анимаций
         const style = document.createElement('style');
         style.textContent = `
             :root {
                 --animation-speed: 1;
-            }
-            
-            .angel-scene {
-                animation-duration: calc(20s / var(--animation-speed));
-            }
-            
-            .portal {
-                animation-duration: calc(10s / var(--animation-speed));
-            }
-            
-            .aurora-sphere {
-                animation-duration: calc(3s / var(--animation-speed));
-            }
-            
-            .angel-wings {
-                animation-duration: calc(4s / var(--animation-speed));
             }
             
             .wave {
@@ -1762,7 +1661,7 @@
         document.head.appendChild(style);
     });
     
-    // Глобальные функции для отладки
+    // Глобальные функции
     window.testAurora = () => window.aurora?.fullDemo();
     window.clearLogs = () => window.aurora?.clearLog();
     window.toggleSound = () => {
@@ -1770,6 +1669,9 @@
             window.aurora.state.soundEnabled = !window.aurora.state.soundEnabled;
             window.aurora.log(window.aurora.state.soundEnabled ? '🔊 Звук включен' : '🔇 Звук выключен');
         }
+    };
+    window.loadGeneratedImage = () => {
+        alert('После генерации картинки вставьте её URL в код');
     };
     </script>
 </body>
